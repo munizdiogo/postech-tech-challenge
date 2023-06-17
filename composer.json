@@ -1,0 +1,13 @@
+{
+    "name": "sua/lanchonete",
+    "description": "Sistema da Lanchonete",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "": "/src"
+        },
+        "files": [
+            "vendor/autoload.php"
+        ]
+    }
+}
