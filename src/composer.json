@@ -1,0 +1,10 @@
+{
+  "autoload": {
+    "psr-4": {
+      "": "."
+    },
+    "files": [
+      "vendor/autoload.php"
+    ]
+  }
+}
