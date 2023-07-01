@@ -4,7 +4,7 @@ namespace Controller;
 
 use Service\ClienteService;
 
-include("C:/xampp/htdocs/postech-tech-challenge/src/Utils/RespostasJson.php");
+include("src/Utils/RespostasJson.php");
 
 class ClienteController
 {
