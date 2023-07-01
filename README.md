@@ -41,7 +41,7 @@ Para a executar os testes unitários, abra o terminal na pasta raiz do projeto e
 ```
 
 
-## Documentation
+## Documentação
 
 [Fluxograma - Realização do Pedido e Pagamento](https://miro.com/app/board/uXjVMAbdRp0=/?share_link_id=567814725228)
 
