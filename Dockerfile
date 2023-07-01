@@ -11,6 +11,7 @@ WORKDIR /var/www/html
 # Copia o código fonte para o diretório de trabalho
 COPY . /var/www/html
 COPY src/. /var/www/html/src
+COPY init.sql /docker-entrypoint-initdb.d/
 
 # Instala as dependências necessárias
 RUN apt-get update && apt-get install -y \
