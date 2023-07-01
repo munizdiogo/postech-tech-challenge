@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once 'vendor/autoload.php';
+(new Controller\DotEnvEnvironment)->load(__DIR__);
 
 use Controller\ClienteController;
 use Controller\ProdutoController;
@@ -14,7 +15,6 @@ use Domain\Entities\ProdutoDomain;
 use Domain\Entities\PedidoDomain;
 
 $database = new Database();
-
 $clienteDomain = new ClienteDomain($database);
 $produtoDomain = new ProdutoDomain($database);
 $pedidoDomain = new PedidoDomain($database);

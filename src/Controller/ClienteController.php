@@ -53,7 +53,7 @@ class ClienteController
 
         $dadosCliente = $this->clienteService->obterClientePorCPF($cpf);
 
-        $resposta = !empty($dadosCliente) ? $dadosCliente : [];
+        $resposta = !empty($dadosCliente) ? $dadosCliente : "Nenhum cliente encontrado com o CPF informado.";
 
         retornarRespostaJSON($resposta, 200);
     }
