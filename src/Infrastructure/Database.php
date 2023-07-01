@@ -1,18 +1,29 @@
 <?php
 
 namespace Infrastructure;
+use \PDO;
+use \PDOException;
 
 class Database
 {
-    private $connection;
+    private $conn;
+    private $host = "localhost";
+    private $db_name = "dbpostech";
+    private $username = "root";
+    private $password = "secret";
+    private $port = 3367;
 
-    public function __construct()
+    public function getConexao()
     {
-        // Configurar a conexão com o banco de dados
-    }
+        $this->conn = null;
 
-    public function execute($query)
-    {
-        // Executar uma consulta no banco de dados
+        try {
+            $this->conn = new PDO("mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name, $this->username, $this->password);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            echo "Erro na conexão com o banco de dados: " . $e->getMessage();
+        }
+
+        return $this->conn;
     }
 }
