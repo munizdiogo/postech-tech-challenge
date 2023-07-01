@@ -1,0 +1,16 @@
+/vendor/
+/.idea/
+/.vscode/
+/.project
+/.classpath
+/logs/
+/tmp/
+*.log
+.env
+/.env.*
+*.env.local
+/data/
+/generated/
+/target/
+/build/
+/out/
