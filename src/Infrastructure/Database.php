@@ -7,11 +7,11 @@ use \PDOException;
 class Database
 {
     private $conn;
-    private $host = "localhost";
+    private $host = "SERVIDOR-DB";
     private $db_name = "dbpostech";
     private $username = "root";
     private $password = "secret";
-    private $port = 3367;
+    private $port = 3306;
 
     public function getConexao()
     {
