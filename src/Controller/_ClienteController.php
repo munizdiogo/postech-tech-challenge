@@ -2,16 +2,15 @@
 
 namespace Controller;
 
-use Domain\Entities\Cliente;
-use Domain\Interfaces\ClienteServiceInterface;
+use Service\ClienteService;
 
 include("src/Utils/RespostasJson.php");
 
 class ClienteController
 {
-    private ClienteServiceInterface $clienteService;
+    private $clienteService;
 
-    public function __construct(ClienteServiceInterface $clienteService)
+    public function __construct(ClienteService $clienteService)
     {
         $this->clienteService = $clienteService;
     }
@@ -34,9 +33,7 @@ class ClienteController
             return;
         }
 
-        $cliente = new Cliente($dados['nome'], $dados['email'], $dados['cpf']);
-
-        $salvarDados = $this->clienteService->cadastrarCliente($cliente);
+        $salvarDados = $this->clienteService->cadastrarCliente($dados);
 
         if ($salvarDados) {
             retornarRespostaJSON("Cliente criado com sucesso.", 201);

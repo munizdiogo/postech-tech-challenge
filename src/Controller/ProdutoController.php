@@ -2,6 +2,7 @@
 
 namespace Controller;
 
+use Domain\Entities\Produto;
 use Service\ProdutoService;
 
 class ProdutoController
@@ -24,14 +25,16 @@ class ProdutoController
             }
         }
 
-        $produtoJaCadastrado = $this->produtoService->obterProdutoPorNome($dados["nome"]);
+        $produtoJaCadastrado = $this->produtoService->getProdutoPorNome($dados["nome"]);
 
         if ($produtoJaCadastrado) {
             retornarRespostaJSON("Já existe um produto cadastrado com esse nome.", 409);
             return;
         }
 
-        $salvarDados = $this->produtoService->cadastrar($dados);
+
+        $produto = new Produto($dados["nome"], $dados["descricao"], $dados["preco"], $dados["categoria"]);
+        $salvarDados = $this->produtoService->setNovoProduto($produto);
 
         if ($salvarDados) {
             retornarRespostaJSON("Produto cadastrado com sucesso.", 201);
@@ -51,22 +54,23 @@ class ProdutoController
             }
         }
 
-        $dadosProduto = $this->produtoService->obterProdutoPorId($dados["id"]);
+        $dadosProduto = $this->produtoService->getProdutoPorId($dados["id"]);
 
         if (empty($dadosProduto)) {
             retornarRespostaJSON("Não foi encontrado um produto com o ID informado.", 440);
             return;
         }
 
-        $novosDados = [
-            "id" => $dados["id"],
-            "nome" => $dados["nome"] ?? $dadosProduto["nome"] ?? "",
-            "descricao" => $dados["descricao"] ?? $dadosProduto["descricao"] ?? "",
-            "preco" => $dados["preco"] ?? $dadosProduto["preco"] ?? "",
-            "categoria" => $dados["categoria"] ?? $dadosProduto["categoria"] ?? ""
-        ];
+        $produto = new Produto(
+            $dados["nome"] ?? $dados["nome"] ?? $dadosProduto["nome"],
+            $dados["descricao"] ?? $dados["descricao"] ?? $dadosProduto["descricao"],
+            $dados["preco"] ?? $dados["preco"] ?? $dadosProduto["preco"],
+            $dados["categoria"] ?? $dados["categoria"] ?? $dadosProduto["categoria"]
+        );
+        $produto->setId($dados["id"]);
 
-        $salvarDados = $this->produtoService->editar($novosDados);
+
+        $salvarDados = $this->produtoService->setProduto($produto);
 
         if ($salvarDados) {
             retornarRespostaJSON("Produto atualizado com sucesso.", 200);
@@ -82,14 +86,14 @@ class ProdutoController
             return;
         }
 
-        $dadosProduto = $this->produtoService->obterProdutoPorId($id);
+        $dadosProduto = $this->produtoService->getProdutoPorId($id);
 
         if (empty($dadosProduto)) {
             retornarRespostaJSON("Não foi encontrado um produto com o ID informado.", 440);
             return;
         }
 
-        $excluirProduto = $this->produtoService->excluir($id);
+        $excluirProduto = $this->produtoService->setExcluirProdutoPorId($id);
 
         if ($excluirProduto) {
             retornarRespostaJSON("Produto excluído com sucesso.", 200);
@@ -105,7 +109,7 @@ class ProdutoController
             return;
         }
 
-        $produtos = $this->produtoService->obterProdutosPorCategoria($nome);
+        $produtos = $this->produtoService->getProdutosPorCategoria($nome);
 
         if (!empty($produtos)) {
             retornarRespostaJSON($produtos, 200);

@@ -4,7 +4,7 @@ namespace Service;
 
 use Domain\Entities\PedidoDomain;
 
-class PedidoService
+class _PedidoService
 {
     private $pedidoDomain;
 

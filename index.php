@@ -8,32 +8,38 @@ require_once 'vendor/autoload.php';
 use Controller\AutenticacaoController;
 use Controller\ClienteController;
 use Controller\ProdutoController;
-use Controller\PedidoController;
+// use Controller\PedidoController;
 use Service\ClienteService;
 use Service\ProdutoService;
-use Service\PedidoService;
-use Infrastructure\Database;
-use Domain\Entities\ClienteDomain;
-use Domain\Entities\ProdutoDomain;
-use Domain\Entities\PedidoDomain;
+// use Service\PedidoService;
+// use Infrastructure\Database;
+// use Domain\Entities\ClienteDomain;
+// use Domain\Entities\ProdutoDomain;
+// use Domain\Entities\PedidoDomain;
 use Firebase\JWT\Key;
 
-$database = new Database();
-$clienteDomain = new ClienteDomain($database);
-$produtoDomain = new ProdutoDomain($database);
-$pedidoDomain = new PedidoDomain($database);
-$clienteService = new ClienteService($clienteDomain);
-$produtoService = new ProdutoService($produtoDomain);
-$pedidoService = new PedidoService($pedidoDomain);
-$clienteController = new ClienteController($clienteService, $clienteDomain);
+// $database = new Database();
+// $clienteDomain = new ClienteDomain($database);
+// $produtoDomain = new ProdutoDomain($database);
+// $pedidoDomain = new PedidoDomain($database);
+// $produtoService = new ProdutoService($produtoDomain);
+// $pedidoService = new PedidoService($pedidoDomain);
+// $produtoController = new ProdutoController($produtoService);
+// $pedidoController = new PedidoController($pedidoService, $clienteService);
+
+
+$clienteService = new ClienteService();
+$clienteController = new ClienteController($clienteService);
+
+$produtoService = new ProdutoService();
 $produtoController = new ProdutoController($produtoService);
-$pedidoController = new PedidoController($pedidoService, $clienteService);
 
 $autenticacaoController = new AutenticacaoController();
 
 
 
 $chaveSecreta = "teste";
+
 
 
 if (isset($_GET['acao']) && $_GET['acao'] == 'gerar') {
@@ -73,15 +79,15 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'gerar') {
                     $produtoController->obterProdutosPorCategoria($_GET["categoria"]);
                     break;
 
-                case "cadastrarNovoPedido":
-                    $jsonDados = file_get_contents("php://input");
-                    $dados = json_decode($jsonDados, true);
-                    $pedidoController->cadastrar($dados);
-                    break;
+                // case "cadastrarNovoPedido":
+                //     $jsonDados = file_get_contents("php://input");
+                //     $dados = json_decode($jsonDados, true);
+                //     $pedidoController->cadastrar($dados);
+                //     break;
 
-                case "obterPedidos":
-                    $pedidoController->obterPedidos();
-                    break;
+                // case "obterPedidos":
+                //     $pedidoController->obterPedidos();
+                //     break;
 
                 default:
                     echo '{

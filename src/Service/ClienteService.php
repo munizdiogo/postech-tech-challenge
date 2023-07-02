@@ -2,35 +2,70 @@
 
 namespace Service;
 
-use Domain\Entities\ClienteDomain;
+use Domain\Entities\Cliente;
+use Infrastructure\Database;
+use Domain\Interfaces\ClienteServiceInterface;
+use PDOException;
 
-class ClienteService
+class ClienteService implements ClienteServiceInterface
 {
-    private $clienteDomain;
+    private $database;
+    private $db;
 
-    public function __construct(ClienteDomain $clienteDomain)
+    public function __construct()
     {
-        $this->clienteDomain = $clienteDomain;
+        $database = new Database;
+        $this->database = $database;
+        $this->db = $this->database->getConexao();
     }
 
-    public function cadastrarCliente(array $dados)
+    public function cadastrarCliente(Cliente $cliente): bool
     {
-        return $this->clienteDomain->setNovoCliente($dados);
+        $_nome = $cliente->getNome();
+        $_email = $cliente->getEmail();
+        $_cpf = $cliente->getCpf();
+        
+        $sql = "INSERT INTO clientes (data_criacao, nome, email, cpf) VALUES (NOW(), :nome, :email, :cpf)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(":nome", $_nome);
+        $stmt->bindParam(":email", $_email);
+        $stmt->bindParam(":cpf", $_cpf);
+
+        try {
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 
     public function validarClientePorId(int $id)
     {
-        return $this->clienteDomain->getClienteEhValidoPorId($id);
+        $sql = "SELECT id FROM clientes WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(":id", $id);
+
+        try {
+            $stmt->execute();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return !empty($result);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 
     public function obterClientePorCPF(string $cpf)
     {
-        $dadosCliente = $this->clienteDomain->getClientePorCPF($cpf);
+        $sql = "SELECT id, cpf, nome, email FROM clientes WHERE cpf = :cpf";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(":cpf", $cpf);
 
-        if (!empty($dadosCliente)) {
-            return $dadosCliente;
-        } else {
-            return [];
+        try {
+            $stmt->execute();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return !empty($result) ? $result : false;
+        } catch (PDOException $e) {
+            return false;
         }
     }
 }
