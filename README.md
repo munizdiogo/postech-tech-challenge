@@ -14,22 +14,23 @@ Abra o terminal dentro da pasta raiz do projeto e execute o seguinte comando:
 E aguarde a finalização da execução. 
 
 
-
-
 ## Variáveis de Ambiente
 
-Para execução correta desse projeto e a conexão com o banco de dados, você precisará adicionar as seguintes variáveis de ambiente em seu arquivo .env (na raiz do projeto):
+Para execução correta desse projeto e a conexão com o banco de dados, abra o Terminal dentro do container SERVIDOR-WEB, execute o comando abaixo para ir para o diretório correto: 
 
-`DB_HOST=SERVIDOR-DB`
+```bash
+  cd /var/www/html
+```
 
-`DB_NAME=dbpostech`
+Em seguida crie um arquivo com o nome .env, com o conteúdo abaixo: 
 
-`DB_USERNAME=root`
-
-`DB_PASSWORD=secret`
-
-`DB_PORT=3306`
-
+```bash
+  DB_HOST=SERVIDOR-DB
+  DB_NAME=dbpostech
+  DB_USERNAME=root
+  DB_PASSWORD=secret
+  DB_PORT=3306
+```
 
 
 ## Testes Unitários
