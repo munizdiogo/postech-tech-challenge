@@ -34,7 +34,13 @@ Para execução correta desse projeto e a conexão com o banco de dados, você p
 
 ## Testes Unitários
 
-Para executar os testes unitários abra o terminal na pasta raiz do projeto e execute o seguinte comando:
+Para executar os testes unitários abra o Terminal dentro do container SERVIDOR-WEB, execute o comando abaixo para ir para o diretório correto: 
+
+```bash
+  cd /var/www/html
+```
+
+Em seguida execute o seguinte comando:
 
 ```bash
   ./vendor/bin/phpunit --testdox tests --colors
