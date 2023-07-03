@@ -41,7 +41,7 @@ $autenticacaoController = new AutenticacaoController();
 
 
 
-$chaveSecreta = "teste";
+$chaveSecreta = $_ENV['CHAVE_SECRETA'];
 
 
 
