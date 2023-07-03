@@ -22,7 +22,7 @@ Para execução correta desse projeto e a conexão com o banco de dados, abra o 
   cd /var/www/html
 ```
 
-Em seguida crie um arquivo com o nome .env, com o conteúdo abaixo: 
+Em seguida crie um arquivo com o nome ".env", com o conteúdo abaixo: 
 
 ```bash
   DB_HOST=SERVIDOR-DB
