@@ -1,10 +1,9 @@
 <?php
 
-namespace Service;
+namespace core\applications\services;
 
-use Domain\Entities\Pedido;
-use Domain\Interfaces\PedidoServiceInterface;
-use Infrastructure\Database;
+use core\applications\ports\PedidoServiceInterface;
+use core\domain\Pedido;
 use PDOException;
 
 class PedidoService implements PedidoServiceInterface

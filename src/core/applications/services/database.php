@@ -1,6 +1,6 @@
 <?php
 
-namespace Infrastructure;
+namespace core\applications\services;
 
 use \PDO;
 use \PDOException;

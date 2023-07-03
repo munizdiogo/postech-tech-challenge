@@ -3,17 +3,16 @@ header('Content-Type: application/json; charset=utf-8');
 require_once 'vendor/autoload.php';
 
 
-(new Controller\DotEnvEnvironment)->load(__DIR__);
+(new adapter\driver\dotEnvEnvironment)->load(__DIR__);
 
-use Controller\AutenticacaoController;
-use Controller\ClienteController;
-use Controller\ProdutoController;
-use Controller\PedidoController;
-use Service\ClienteService;
-use Service\ProdutoService;
-use Service\PedidoService;
-
-use Firebase\JWT\Key;
+use adapter\driver\AutenticacaoController;
+use adapter\driver\ClienteController;
+use adapter\driver\PedidoController;
+use adapter\driver\ProdutoController;
+use core\applications\services\ClienteService;
+use core\applications\services\PedidoService;
+use core\applications\services\ProdutoService;
+use Firebase\JWT\Key as Key;
 
 $clienteService = new ClienteService();
 $clienteController = new ClienteController($clienteService);

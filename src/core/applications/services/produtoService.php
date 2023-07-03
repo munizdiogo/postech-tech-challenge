@@ -1,10 +1,9 @@
 <?php
 
-namespace Service;
+namespace core\applications\services;
 
-use Domain\Entities\Produto;
-use Domain\Interfaces\ProdutoServiceInterface;
-use Infrastructure\Database;
+use core\applications\ports\ProdutoServiceInterface;
+use core\domain\Produto;
 use PDOException;
 
 class ProdutoService implements ProdutoServiceInterface

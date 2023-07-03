@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Entities;
+namespace core\domain;
 
 class Pedido
 {

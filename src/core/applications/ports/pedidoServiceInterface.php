@@ -1,8 +1,8 @@
 <?php
 
-namespace Domain\Interfaces;
+namespace core\applications\ports;
 
-use Domain\Entities\Pedido;
+use core\domain\Pedido;
 
 interface PedidoServiceInterface
 {

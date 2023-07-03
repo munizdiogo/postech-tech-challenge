@@ -1,11 +1,11 @@
 <?php
 
-namespace Controller;
+namespace adapter\driver;
 
-use Domain\Entities\Pedido;
-use Domain\Entities\Produto;
-use Domain\Interfaces\ClienteServiceInterface;
-use Domain\Interfaces\PedidoServiceInterface;
+use core\applications\ports\ClienteServiceInterface;
+use core\applications\ports\PedidoServiceInterface;
+use core\domain\Pedido;
+use core\domain\Produto;
 
 class PedidoController
 {

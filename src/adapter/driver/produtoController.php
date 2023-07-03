@@ -1,9 +1,9 @@
 <?php
 
-namespace Controller;
+namespace adapter\driver;
 
-use Domain\Entities\Produto;
-use Domain\Interfaces\ProdutoServiceInterface;
+use core\applications\ports\ProdutoServiceInterface;
+use core\domain\Produto;
 
 class ProdutoController
 {

@@ -1,10 +1,9 @@
 <?php
 
-namespace Service;
+namespace core\applications\services;
 
-use Domain\Entities\Cliente;
-use Infrastructure\Database;
-use Domain\Interfaces\ClienteServiceInterface;
+use core\applications\ports\ClienteServiceInterface;
+use core\domain\Cliente;
 use PDOException;
 
 class ClienteService implements ClienteServiceInterface

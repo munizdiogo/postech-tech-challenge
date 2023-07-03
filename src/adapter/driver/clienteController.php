@@ -1,11 +1,11 @@
 <?php
 
-namespace Controller;
+namespace adapter\driver;
 
-use Domain\Entities\Cliente;
-use Domain\Interfaces\ClienteServiceInterface;
+use core\applications\ports\ClienteServiceInterface;
+use core\domain\Cliente;
 
-include("src/Utils/RespostasJson.php");
+include("src/utils/respostasJson.php");
 
 class ClienteController
 {
