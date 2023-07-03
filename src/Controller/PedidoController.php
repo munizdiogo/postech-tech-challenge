@@ -6,8 +6,6 @@ use Domain\Entities\Pedido;
 use Domain\Entities\Produto;
 use Domain\Interfaces\ClienteServiceInterface;
 use Domain\Interfaces\PedidoServiceInterface;
-use Service\PedidoService;
-use Service\ClienteService;
 
 class PedidoController
 {

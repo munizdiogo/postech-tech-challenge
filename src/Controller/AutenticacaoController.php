@@ -42,7 +42,7 @@ class AutenticacaoController
                 'iss' => 'localhost',  // Emissor do token
                 'aud' => 'localhost',   // Audiência do token
                 'iat' => time(),                  // Data de emissão do token
-                'exp' => time() + (60 * 60 * 24),      // Data de expiração do token (1 hora)
+                'exp' => time() + (60 * 60 * 24),      // Data de expiração do token (24 hora)
                 'data' => $dadosUsuario           // Dados do usuário
             );
 

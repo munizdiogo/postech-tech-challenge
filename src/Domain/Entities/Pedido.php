@@ -2,15 +2,12 @@
 
 namespace Domain\Entities;
 
-use Domain\Entities\Produto;
-
 class Pedido
 {
 
     private string $id;
     private string $status;
     private string $idCliente;
-    // private string $dataCriacao;
     private array $produtos;
 
     public function __construct(string $status, string $idCliente, array $produtos = [])

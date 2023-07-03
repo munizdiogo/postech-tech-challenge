@@ -12,21 +12,8 @@ use Controller\PedidoController;
 use Service\ClienteService;
 use Service\ProdutoService;
 use Service\PedidoService;
-// use Infrastructure\Database;
-// use Domain\Entities\ClienteDomain;
-// use Domain\Entities\ProdutoDomain;
-// use Domain\Entities\PedidoDomain;
+
 use Firebase\JWT\Key;
-
-// $database = new Database();
-// $clienteDomain = new ClienteDomain($database);
-// $produtoDomain = new ProdutoDomain($database);
-// $pedidoDomain = new PedidoDomain($database);
-// $produtoService = new ProdutoService($produtoDomain);
-// $pedidoService = new PedidoService($pedidoDomain);
-// $produtoController = new ProdutoController($produtoService);
-// $pedidoController = new PedidoController($pedidoService, $clienteService);
-
 
 $clienteService = new ClienteService();
 $clienteController = new ClienteController($clienteService);
@@ -93,9 +80,7 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'gerar') {
                     break;
 
                 default:
-                    echo '{
-                        "mensagem": "A ação informada é inválida."
-                      }';
+                    echo '{"mensagem": "A ação informada é inválida."}';
                     http_response_code(400);
             }
         }

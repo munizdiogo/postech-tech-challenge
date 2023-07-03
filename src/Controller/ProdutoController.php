@@ -4,7 +4,6 @@ namespace Controller;
 
 use Domain\Entities\Produto;
 use Domain\Interfaces\ProdutoServiceInterface;
-use Service\ProdutoService;
 
 class ProdutoController
 {
