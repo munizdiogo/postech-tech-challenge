@@ -8,10 +8,10 @@ require_once 'vendor/autoload.php';
 use Controller\AutenticacaoController;
 use Controller\ClienteController;
 use Controller\ProdutoController;
-// use Controller\PedidoController;
+use Controller\PedidoController;
 use Service\ClienteService;
 use Service\ProdutoService;
-// use Service\PedidoService;
+use Service\PedidoService;
 // use Infrastructure\Database;
 // use Domain\Entities\ClienteDomain;
 // use Domain\Entities\ProdutoDomain;
@@ -34,6 +34,9 @@ $clienteController = new ClienteController($clienteService);
 $produtoService = new ProdutoService();
 $produtoController = new ProdutoController($produtoService);
 
+$pedidoService = new PedidoService();
+$pedidoController = new PedidoController($pedidoService, $clienteService);
+
 $autenticacaoController = new AutenticacaoController();
 
 
@@ -49,7 +52,7 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'gerar') {
 } else {
     $retornoValidacaoAcesso = validarAcesso();
     $jsonRetornoValidacaoAcesso = json_decode($retornoValidacaoAcesso);
-  
+
 
     if ($jsonRetornoValidacaoAcesso->status) {
 
@@ -79,15 +82,15 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'gerar') {
                     $produtoController->obterProdutosPorCategoria($_GET["categoria"]);
                     break;
 
-                // case "cadastrarNovoPedido":
-                //     $jsonDados = file_get_contents("php://input");
-                //     $dados = json_decode($jsonDados, true);
-                //     $pedidoController->cadastrar($dados);
-                //     break;
+                case "cadastrarNovoPedido":
+                    $jsonDados = file_get_contents("php://input");
+                    $dados = json_decode($jsonDados, true);
+                    $pedidoController->cadastrar($dados);
+                    break;
 
-                // case "obterPedidos":
-                //     $pedidoController->obterPedidos();
-                //     break;
+                case "obterPedidos":
+                    $pedidoController->obterPedidos();
+                    break;
 
                 default:
                     echo '{

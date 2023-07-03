@@ -3,13 +3,14 @@
 namespace Controller;
 
 use Domain\Entities\Produto;
+use Domain\Interfaces\ProdutoServiceInterface;
 use Service\ProdutoService;
 
 class ProdutoController
 {
     private $produtoService;
 
-    public function __construct(ProdutoService $produtoService)
+    public function __construct(ProdutoServiceInterface $produtoService)
     {
         $this->produtoService = $produtoService;
     }

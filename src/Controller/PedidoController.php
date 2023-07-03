@@ -2,6 +2,10 @@
 
 namespace Controller;
 
+use Domain\Entities\Pedido;
+use Domain\Entities\Produto;
+use Domain\Interfaces\ClienteServiceInterface;
+use Domain\Interfaces\PedidoServiceInterface;
 use Service\PedidoService;
 use Service\ClienteService;
 
@@ -10,16 +14,26 @@ class PedidoController
     private $pedidoService;
     private $clienteService;
 
-    public function __construct(PedidoService $pedidoService, ClienteService $clienteService)
+    public function __construct(PedidoServiceInterface $pedidoService, ClienteServiceInterface $clienteService)
     {
         $this->pedidoService = $pedidoService;
         $this->clienteService = $clienteService;
     }
 
-    public function cadastrar(array $dados): void
+    public function cadastrar(array $dados)
     {
         $idCliente = $dados["idCliente"] ?? "";
-        $produtos = $dados["produtos"] ?? [];
+
+        $produtos = [];
+
+        if (count($dados["produtos"]) > 0) {
+            foreach ($dados["produtos"] as $dadosProduto) {
+                $produto = new Produto($dadosProduto["nome"], $dadosProduto["descricao"], $dadosProduto["preco"], $dadosProduto["categoria"]);
+                $produto->setId($dadosProduto["id"]);
+                array_push($produtos, $produto);
+            }
+        }
+
 
         if (empty($idCliente) || empty($produtos)) {
             retornarRespostaJSON("Os campos 'idCliente' e 'produtos' são obrigatórios.", 400);
@@ -28,8 +42,13 @@ class PedidoController
 
         $clienteValido = $this->clienteService->validarClientePorId($idCliente);
 
+
         if ($clienteValido) {
-            $idPedido = $this->pedidoService->cadastrarPedido($dados);
+
+            $pedido = new Pedido('recebido', $idCliente, $produtos);
+
+            $idPedido = $this->pedidoService->setNovoPedido($pedido);
+
             if ($idPedido) {
                 retornarRespostaJSON(["id" => $idPedido, "mensagem" => "Pedido criado com sucesso."], 201);
             } else {
@@ -43,7 +62,7 @@ class PedidoController
     public function obterPedidos(): void
     {
         $pedidosFormatados = [];
-        $pedidos = $this->pedidoService->obterPedidos();
+        $pedidos = $this->pedidoService->getPedidos();
 
         if (!empty($pedidos)) {
             foreach ($pedidos as $chave => $valor) {
@@ -54,7 +73,7 @@ class PedidoController
                     "precoTotal" => 0,
                     "produtos" => []
                 ];
-                $produtos = $this->pedidoService->obterProdutosPorIdPedido($valor["id"]);
+                $produtos = $this->pedidoService->getProdutosPorIdPedido($valor["id"]);
                 $chavePedidoFormatado = array_search($valor["id"], array_column($pedidosFormatados, "idPedido"));
                 foreach ($produtos as $produto) {
                     $pedidosFormatados[$chavePedidoFormatado]["produtos"][] = [
