@@ -1,8 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Controller\ClienteController;
-use Service\ClienteService;
+use adapter\driver\ClienteController;
+use core\applications\services\ClienteService;
 
 class ClienteControllerTest extends TestCase
 {

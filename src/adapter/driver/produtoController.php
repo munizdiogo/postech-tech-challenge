@@ -3,7 +3,7 @@
 namespace adapter\driver;
 
 use core\applications\ports\ProdutoServiceInterface;
-use core\domain\Produto;
+use core\domain\entities\Produto;
 
 class ProdutoController
 {

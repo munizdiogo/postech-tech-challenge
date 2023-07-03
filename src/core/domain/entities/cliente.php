@@ -1,6 +1,6 @@
 <?php
 
-namespace core\domain;
+namespace core\domain\entities;
 
 class Cliente
 {

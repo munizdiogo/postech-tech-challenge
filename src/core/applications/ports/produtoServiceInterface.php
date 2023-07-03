@@ -2,7 +2,7 @@
 
 namespace core\applications\ports;
 
-use core\domain\Produto;
+use core\domain\entities\Produto;
 
 interface ProdutoServiceInterface
 {

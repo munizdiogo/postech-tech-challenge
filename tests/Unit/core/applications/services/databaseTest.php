@@ -1,7 +1,7 @@
 <?php
 
-use Infrastructure\Database;
 use PHPUnit\Framework\TestCase;
+use core\applications\services\Database;
 
 class DatabaseTest extends TestCase
 {

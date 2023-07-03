@@ -1,14 +1,13 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Domain\Entities\ProdutoDomain;
-use Service\ProdutoService;
+use core\applications\services\ProdutoService;
 
 class ProdutoServiceTest extends TestCase
 {
     public function testCadastrar()
     {
-        $produtoDomainMock = $this->createMock(ProdutoDomain::class);
+        $produtoDomainMock = $this->createMock(ProdutoService::class);
 
         $produtoDomainMock->expects($this->once())
             ->method('setNovoProduto')
@@ -26,7 +25,7 @@ class ProdutoServiceTest extends TestCase
 
     public function testEditar()
     {
-        $produtoDomainMock = $this->createMock(ProdutoDomain::class);
+        $produtoDomainMock = $this->createMock(ProdutoService::class);
 
         $produtoDomainMock->expects($this->once())
             ->method('setProduto')
@@ -44,7 +43,7 @@ class ProdutoServiceTest extends TestCase
 
     public function testExcluir()
     {
-        $produtoDomainMock = $this->createMock(ProdutoDomain::class);
+        $produtoDomainMock = $this->createMock(ProdutoService::class);
 
         $produtoDomainMock->expects($this->once())
             ->method('setExcluirProdutoPorId')
@@ -62,7 +61,7 @@ class ProdutoServiceTest extends TestCase
 
     public function testObterProdutosPorCategoria()
     {
-        $produtoDomainMock = $this->createMock(ProdutoDomain::class);
+        $produtoDomainMock = $this->createMock(ProdutoService::class);
 
         $produtoDomainMock->expects($this->once())
             ->method('getProdutosPorCategoria')
@@ -156,7 +155,7 @@ class ProdutoServiceTest extends TestCase
 
     public function testObterProdutoPorNome()
     {
-        $produtoDomainMock = $this->createMock(ProdutoDomain::class);
+        $produtoDomainMock = $this->createMock(ProdutoService::class);
 
         $produtoDomainMock->expects($this->once())
             ->method('getProdutoPorNome')
@@ -174,7 +173,7 @@ class ProdutoServiceTest extends TestCase
 
     public function testObterProdutoPorId()
     {
-        $produtoDomainMock = $this->createMock(ProdutoDomain::class);
+        $produtoDomainMock = $this->createMock(ProdutoService::class);
 
         $produtoDomainMock->expects($this->once())
             ->method('getProdutoPorId')

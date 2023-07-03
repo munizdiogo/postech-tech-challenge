@@ -1,41 +1,43 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Domain\Entities\PedidoDomain;
+use core\applications\services\PedidoService;
 
-class PedidoDomainTest extends TestCase
+class PedidoServiceTest extends TestCase
 {
-    public function testSetNovoPedido()
+    public function testCadastrarPedido()
     {
-        $pedidoDomainMock = $this->createMock(PedidoDomain::class);
+        $pedidoDomainMock = $this->createMock(PedidoService::class);
 
         $pedidoDomainMock->expects($this->once())
             ->method('setNovoPedido')
             ->with([
                 'idCliente' => 1,
                 'produtos' => [
-                    ['id' => 1, 'nome' => 'Lanche 1', 'descricao' => 'Lanche 1', 'preco' => 10.00, 'categoria' => 'lanche'],
-                    ['id' => 2, 'nome' => 'Bebida 1', 'descricao' => 'Bebida 1', 'preco' => 5.00, 'categoria' => 'bebida'],
+                    ['id' => 1, 'categoria' => 'lanche', 'descricao' => 'Lanche 1', 'preco' => 10.00],
+                    ['id' => 2, 'categoria' => 'bebida', 'descricao' => 'Bebida 1', 'preco' => 5.00],
                 ]
             ])
             ->willReturn(true);
 
+        $pedidoService = new PedidoService($pedidoDomainMock);
+
         $dadosPedido = [
             'idCliente' => 1,
             'produtos' => [
-                ['id' => 1, 'nome' => 'Lanche 1', 'descricao' => 'Lanche 1', 'preco' => 10.00, 'categoria' => 'lanche'],
-                ['id' => 2, 'nome' => 'Bebida 1', 'descricao' => 'Bebida 1', 'preco' => 5.00, 'categoria' => 'bebida'],
+                ['id' => 1, 'categoria' => 'lanche', 'descricao' => 'Lanche 1', 'preco' => 10.00],
+                ['id' => 2, 'categoria' => 'bebida', 'descricao' => 'Bebida 1', 'preco' => 5.00],
             ]
         ];
 
-        $resultado = $pedidoDomainMock->setNovoPedido($dadosPedido);
+        $resultado = $pedidoService->cadastrarPedido($dadosPedido);
 
         $this->assertTrue($resultado);
     }
 
-    public function testGetPedidos()
+    public function testObterPedidos()
     {
-        $pedidoDomainMock = $this->createMock(PedidoDomain::class);
+        $pedidoDomainMock = $this->createMock(PedidoService::class);
 
         $pedidoDomainMock->expects($this->once())
             ->method('getPedidos')
@@ -48,15 +50,13 @@ class PedidoDomainTest extends TestCase
                         "produtos" => [
                             [
                                 "id" => "12",
-                                "nome" => "Lanche 1",
-                                "descricao" => "Pão, hamburger, queijo",
+                                "descricao" => "Lanche 1",
                                 "preco" => "20",
                                 "categoria" => "lanche"
                             ],
                             [
                                 "id" => "13",
-                                "nome" => "Bebida 1",
-                                "descricao" => "Bebida gelada",
+                                "descricao" => "Bebida 1",
                                 "preco" => "5",
                                 "categoria" => "bebida"
                             ],
@@ -65,7 +65,9 @@ class PedidoDomainTest extends TestCase
                 ]
             );
 
-        $resultado = $pedidoDomainMock->getPedidos();
+        $pedidoService = new PedidoService($pedidoDomainMock);
+
+        $resultado = $pedidoService->obterPedidos();
 
         $this->assertEquals([
             [
@@ -75,15 +77,13 @@ class PedidoDomainTest extends TestCase
                 "produtos" => [
                     [
                         "id" => "12",
-                        "nome" => "Lanche 1",
-                        "descricao" => "Pão, hamburger, queijo",
+                        "descricao" => "Lanche 1",
                         "preco" => "20",
                         "categoria" => "lanche"
                     ],
                     [
                         "id" => "13",
-                        "nome" => "Bebida 1",
-                        "descricao" => "Bebida gelada",
+                        "descricao" => "Bebida 1",
                         "preco" => "5",
                         "categoria" => "bebida"
                     ],

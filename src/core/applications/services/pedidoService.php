@@ -3,7 +3,7 @@
 namespace core\applications\services;
 
 use core\applications\ports\PedidoServiceInterface;
-use core\domain\Pedido;
+use core\domain\entities\Pedido;
 use PDOException;
 
 class PedidoService implements PedidoServiceInterface

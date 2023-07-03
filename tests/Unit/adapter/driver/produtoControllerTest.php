@@ -1,8 +1,8 @@
 <?php
 
-use Controller\ProdutoController;
+use adapter\driver\ProdutoController;
 use PHPUnit\Framework\TestCase;
-use Service\ProdutoService;
+use core\applications\services\ProdutoService;
 
 class ProdutoControllerTest extends TestCase
 {

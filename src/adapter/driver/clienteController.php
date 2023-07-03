@@ -3,7 +3,7 @@
 namespace adapter\driver;
 
 use core\applications\ports\ClienteServiceInterface;
-use core\domain\Cliente;
+use core\domain\entities\Cliente;
 
 include("src/utils/respostasJson.php");
 

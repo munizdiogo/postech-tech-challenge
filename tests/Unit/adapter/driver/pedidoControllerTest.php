@@ -1,9 +1,9 @@
 <?php
 
-use Controller\PedidoController;
 use PHPUnit\Framework\TestCase;
-use Service\PedidoService;
-use Service\ClienteService;
+use adapter\driver\PedidoController;
+use core\applications\services\PedidoService;
+use core\applications\services\ClienteService;
 
 class PedidoControllerTest extends TestCase
 {

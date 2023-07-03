@@ -2,7 +2,7 @@
 
 namespace core\applications\ports;
 
-use core\domain\Cliente;
+use core\domain\entities\Cliente;
 
 interface ClienteServiceInterface
 {

@@ -3,7 +3,7 @@
 namespace core\applications\services;
 
 use core\applications\ports\ProdutoServiceInterface;
-use core\domain\Produto;
+use core\domain\entities\Produto;
 use PDOException;
 
 class ProdutoService implements ProdutoServiceInterface

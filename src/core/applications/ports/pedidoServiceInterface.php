@@ -2,7 +2,7 @@
 
 namespace core\applications\ports;
 
-use core\domain\Pedido;
+use core\domain\entities\Pedido;
 
 interface PedidoServiceInterface
 {

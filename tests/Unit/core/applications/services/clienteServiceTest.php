@@ -1,14 +1,13 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Domain\Entities\ClienteDomain;
-use Service\ClienteService;
+use core\applications\services\ClienteService;
 
 class ClienteServiceTest extends TestCase
 {
     public function testCadastrarCliente()
     {
-        $clienteDomainMock = $this->createMock(ClienteDomain::class);
+        $clienteDomainMock = $this->createMock(ClienteService::class);
 
         $clienteDomainMock->expects($this->once())
             ->method('setNovoCliente')
@@ -26,7 +25,7 @@ class ClienteServiceTest extends TestCase
 
     public function testObterClientePorCPF()
     {
-        $clienteDomainMock = $this->createMock(ClienteDomain::class);
+        $clienteDomainMock = $this->createMock(ClienteService::class);
 
         $clienteDomainMock->expects($this->once())
             ->method('getClientePorCPF')

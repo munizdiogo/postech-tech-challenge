@@ -3,7 +3,7 @@
 namespace core\applications\services;
 
 use core\applications\ports\ClienteServiceInterface;
-use core\domain\Cliente;
+use core\domain\entities\Cliente;
 use PDOException;
 
 class ClienteService implements ClienteServiceInterface
