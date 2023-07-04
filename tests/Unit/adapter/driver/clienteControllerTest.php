@@ -45,4 +45,19 @@ class ClienteControllerTest extends TestCase
 
         $this->expectOutputString('{"nome":"João","email":"joao@example.com","cpf":"12345678901"}');
     }
+
+    public function testBuscarClientePorCpfNaoEncontrado()
+    {
+        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
+
+        $clienteServiceMock->expects($this->once())
+            ->method('obterClientePorCPF')
+            ->willReturn([]);
+
+        $clienteController = new ClienteController($clienteServiceMock);
+
+        $clienteController->buscarClientePorCPF('123456789015');
+
+        $this->expectOutputString('{"mensagem":"Nenhum cliente encontrado com o CPF informado."}');
+    }
 }

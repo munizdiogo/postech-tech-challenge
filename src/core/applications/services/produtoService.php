@@ -84,6 +84,7 @@ class ProdutoService implements ProdutoServiceInterface
         $sql = "SELECT * FROM produtos WHERE categoria = :categoria";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(":categoria", $categoria);
+        
         try {
             $stmt->execute();
             $resultado = $stmt->fetchAll(\PDO::FETCH_ASSOC);
