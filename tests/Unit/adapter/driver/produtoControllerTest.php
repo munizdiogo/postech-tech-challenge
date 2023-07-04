@@ -1,100 +1,204 @@
 <?php
 
-use adapter\driver\ProdutoController;
 use PHPUnit\Framework\TestCase;
-use core\applications\services\ProdutoService;
+use adapter\driver\ProdutoController;
+use core\applications\ports\ProdutoServiceInterface;
+use core\domain\entities\Produto;
 
 class ProdutoControllerTest extends TestCase
 {
-    public function testCadastrar(): void
+    // Consultar
+    public function testObterProdutosPorCategoriaComNomeVazio()
     {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $controller = new ProdutoController($mockService);
+
+        $nome = '';
+
+        $this->expectOutputString('{"mensagem":"O campo nome é obrigatório."}');
+        $controller->obterProdutosPorCategoria($nome);
+    }
+
+    public function testObterProdutosPorCategoriaComProdutosEncontrados()
+    {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService->method('getProdutosPorCategoria')->willReturn([["nome" => "Produto 1", "descricao" => "Descrição 1", "preco" => 10, "categoria" => "Categoria"],["nome" => "Produto 2", "descricao" => "Descrição 2", "preco" => 20, "categoria" => "Categoria"]]);
+        
+
+        $controller = new ProdutoController($mockService);
+
+        $nome = 'Categoria';
+
+        $this->expectOutputString('[{"nome":"Produto 1","descricao":"Descrição 1","preco":10,"categoria":"Categoria"},{"nome":"Produto 2","descricao":"Descrição 2","preco":20,"categoria":"Categoria"}]');
+        $controller->obterProdutosPorCategoria($nome);
+    }
+
+    public function testObterProdutosPorCategoriaSemProdutosEncontrados()
+    {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService->method('getProdutosPorCategoria')->willReturn([]);
+
+        $controller = new ProdutoController($mockService);
+
+        $nome = 'Categoria';
+
+        $this->expectOutputString('{"mensagem":"Nenhum produto encontrado nesta categoria."}');
+        $controller->obterProdutosPorCategoria($nome);
+    }
+
+    // Cadastrar
+
+    public function testCadastrarProdutoComCamposObrigatoriosVazios()
+    {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $controller = new ProdutoController($mockService);
+
         $dados = [
-            "nome" => "Produto 1",
-            "descricao" => "Descrição do Produto 1",
-            "preco" => 10.0,
-            "categoria" => "lanche"
+            'nome' => '',
+            'descricao' => '',
+            'preco' => '',
+            'categoria' => '',
         ];
 
-        $produtoServiceMock = $this->createMock(ProdutoService::class);
-        $produtoServiceMock->method('obterProdutoPorNome')
-            ->with($dados["nome"])
-            ->willReturn(false);
+        $this->expectOutputString('{"mensagem":"O campo \'nome\' é obrigatório."}');
+        $controller->cadastrar($dados);
+    }
 
-        $produtoServiceMock->method('cadastrar')
-            ->with($dados)
-            ->willReturn(true);
+    public function testCadastrarProdutoJaExistente()
+    {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService->method('getProdutoPorNome')->willReturn(['nome' => 'Produto Existente','descricao' => 'Descrição','preco' => 10.0,'categoria' => 'Categoria']);
 
-        $produtoController = new ProdutoController($produtoServiceMock);
+        $controller = new ProdutoController($mockService);
 
-        $produtoController->cadastrar($dados);
+        $dados = [
+            'nome' => 'Produto Existente',
+            'descricao' => 'Descrição',
+            'preco' => 10.0,
+            'categoria' => 'Categoria',
+        ];
+
+        $this->expectOutputString('{"mensagem":"Já existe um produto cadastrado com esse nome."}');
+        $controller->cadastrar($dados);
+    }
+
+    public function testCadastrarProdutoComSucesso()
+    {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService->method('getProdutoPorNome')->willReturn([]);
+        $mockService->method('setNovoProduto')->willReturn(true);
+
+        $controller = new ProdutoController($mockService);
+
+        $dados = [
+            'nome' => 'Novo Produto 2',
+            'descricao' => 'Descrição do novo produto 2',
+            'preco' => 21.0,
+            'categoria' => 'Categoria Nova 2',
+        ];
 
         $this->expectOutputString('{"mensagem":"Produto cadastrado com sucesso."}');
+        $controller->cadastrar($dados);
     }
 
-    public function testEditar(): void
+
+    // Editar
+    public function testEditarProdutoComCamposObrigatoriosVazios()
     {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $controller = new ProdutoController($mockService);
+
         $dados = [
-            "id" => 1,
-            "nome" => "Produto Editado",
-            "descricao" => "Descrição Editada",
-            "preco" => 20.0,
-            "categoria" => "Categoria Editada"
+            'id' => 1,
+            'nome' => '',
+            'descricao' => '',
+            'preco' => '',
+            'categoria' => '',
         ];
 
-        $produtoServiceMock = $this->createMock(ProdutoService::class);
-        $produtoServiceMock->method('obterProdutoPorId')
-            ->with($dados["id"])
-            ->willReturn(["id" => $dados["id"]]);
+        $this->expectOutputString('{"mensagem":"O campo \'nome\' é obrigatório."}');
+        $controller->editar($dados);
+    }
 
-        $produtoServiceMock->method('editar')
-            ->with($dados)
-            ->willReturn(true);
+    public function testEditarProdutoNaoEncontrado()
+    {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService->method('getProdutoPorId')->willReturn([]);
 
-        $produtoController = new ProdutoController($produtoServiceMock);
+        $controller = new ProdutoController($mockService);
 
-        $produtoController->editar($dados);
+        $dados = [
+            'id' => 1,
+            'nome' => 'Produto Editado',
+            'descricao' => 'Descrição Editada',
+            'preco' => 30.0,
+            'categoria' => 'Categoria Editada',
+        ];
+
+        $this->expectOutputString('{"mensagem":"Não foi encontrado um produto com o ID informado."}');
+        $controller->editar($dados);
+    }
+
+    public function testEditarProdutoComSucesso()
+    {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService->method('getProdutoPorId')->willReturn(['nome' => 'Produto Editado', 'descricao' => 'Descrição Editada', 'preco' => 30.0, 'categoria' => 'Categoria Editada']);
+        $mockService->method('setProduto')->willReturn(true);
+
+        $controller = new ProdutoController($mockService);
+
+        $dados = [
+            'id' => 1,
+            'nome' => 'Produto Editado',
+            'descricao' => 'Descrição Editada',
+            'preco' => 30.0,
+            'categoria' => 'Categoria Editada',
+        ];
 
         $this->expectOutputString('{"mensagem":"Produto atualizado com sucesso."}');
+        $controller->editar($dados);
     }
 
-    public function testExcluir(): void
+
+    // Excluir
+    public function testExcluirProdutoComIdVazio()
     {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService->method('getProdutoPorId')->willReturn([]);
+        $mockService->method('setExcluirProdutoPorId')->willReturn(false);
+
+        $controller = new ProdutoController($mockService);
+
+        $id = '';
+
+        $this->expectOutputString('{"mensagem":"O campo ID é obrigatório."}');
+        $controller->excluir($id);
+    }
+
+    public function testExcluirProdutoNaoEncontrado()
+    {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService->method('getProdutoPorId')->willReturn([]);
+
+        $controller = new ProdutoController($mockService);
+
+        $id = 6;
+
+        $this->expectOutputString('{"mensagem":"Não foi encontrado um produto com o ID informado."}');
+        $controller->excluir($id);
+    }
+
+    public function testExcluirProdutoComSucesso()
+    {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService->method('getProdutoPorId')->willReturn(["nome" => "Produto Existente", "descricao" => "Descrição", "preco" => 10.0, "categoria" => "Categoria"]);
+        $mockService->method('setExcluirProdutoPorId')->willReturn(true);
+
+        $controller = new ProdutoController($mockService);
+
         $id = 1;
 
-        $produtoServiceMock = $this->createMock(ProdutoService::class);
-        $produtoServiceMock->method('obterProdutoPorId')
-            ->with($id)
-            ->willReturn(["id" => $id]);
-
-        $produtoServiceMock->method('excluir')
-            ->with($id)
-            ->willReturn(true);
-
-        $produtoController = new ProdutoController($produtoServiceMock);
-
-        $produtoController->excluir($id);
-
         $this->expectOutputString('{"mensagem":"Produto excluído com sucesso."}');
-    }
-
-    public function testObterProdutosPorCategoria(): void
-    {
-        $nomeCategoria = "lanche";
-
-        $produtos = [
-            ["nome" => "Produto 1", "descricao" => "Descrição do Produto 1"],
-            ["nome" => "Produto 2", "descricao" => "Descrição do Produto 2"]
-        ];
-
-        $produtoServiceMock = $this->createMock(ProdutoService::class);
-        $produtoServiceMock->method('obterProdutosPorCategoria')
-            ->with($nomeCategoria)
-            ->willReturn($produtos);
-
-        $produtoController = new ProdutoController($produtoServiceMock);
-
-        $produtoController->obterProdutosPorCategoria($nomeCategoria);
-
-        $this->expectOutputString('[{"nome":"Produto 1","descricao":"Descrição do Produto 1"},{"nome":"Produto 2","descricao":"Descrição do Produto 2"}]');
+        $controller->excluir($id);
     }
 }

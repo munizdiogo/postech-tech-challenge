@@ -79,9 +79,10 @@ class ProdutoController
         }
     }
 
-    public function excluir(int $id): void
+    public function excluir($id): void
     {
-        if (empty($id)) {
+
+        if (empty(strval($id))) {
             retornarRespostaJSON("O campo ID é obrigatório.", 400);
             return;
         }

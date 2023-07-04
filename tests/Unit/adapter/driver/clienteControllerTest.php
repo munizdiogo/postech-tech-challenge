@@ -2,40 +2,47 @@
 
 use PHPUnit\Framework\TestCase;
 use adapter\driver\ClienteController;
-use core\applications\services\ClienteService;
+use core\applications\ports\ClienteServiceInterface;
 
 class ClienteControllerTest extends TestCase
 {
-    public function testCadastrar(): void
+    public function testCadastrar()
     {
-        $dados = [
-            "nome" => "Jose",
-            "email" => "jose@teste.com",
-            "cpf" => "1234567890"
-        ];
+        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
 
-        $clienteServiceMock = $this->createMock(ClienteService::class);
-        $clienteServiceMock->method('obterClientePorCPF')->willReturn(null);
-        $clienteServiceMock->method('cadastrarCliente')->willReturn(true);
+        $clienteServiceMock->expects($this->once())
+            ->method('obterClientePorCPF')
+            ->willReturn(false);
+
+        $clienteServiceMock->expects($this->once())
+            ->method('cadastrarCliente')
+            ->willReturn(true);
 
         $clienteController = new ClienteController($clienteServiceMock);
+
+        $dados = [
+            'nome' => 'João',
+            'email' => 'joao@example.com',
+            'cpf' => '12345678901',
+        ];
 
         $clienteController->cadastrar($dados);
 
         $this->expectOutputString('{"mensagem":"Cliente criado com sucesso."}');
     }
 
-    public function testBuscarClientePorCPF(): void
+    public function testBuscarClientePorCpf()
     {
-        $cpf = "12345678900";
+        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
 
-        $clienteServiceMock = $this->createMock(ClienteService::class);
-        $clienteServiceMock->method('obterClientePorCPF')->willReturn(['nome' => 'Jose', 'email' => 'jose@teste.com']);
+        $clienteServiceMock->expects($this->once())
+            ->method('obterClientePorCPF')
+            ->willReturn(['nome' => 'João', 'email' => 'joao@example.com', 'cpf' => '12345678901']);
 
         $clienteController = new ClienteController($clienteServiceMock);
 
-        $clienteController->buscarClientePorCPF($cpf);
+        $clienteController->buscarClientePorCPF('123.456.789-01');
 
-        $this->expectOutputString('{"nome":"Jose","email":"jose@teste.com"}');
+        $this->expectOutputString('{"nome":"João","email":"joao@example.com","cpf":"12345678901"}');
     }
 }
