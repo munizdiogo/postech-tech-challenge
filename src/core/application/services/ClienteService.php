@@ -1,8 +1,8 @@
 <?php
 
-namespace core\applications\services;
+namespace core\application\services;
 
-use core\applications\ports\ClienteServiceInterface;
+use core\application\ports\ClienteServiceInterface;
 use core\domain\entities\Cliente;
 use PDOException;
 

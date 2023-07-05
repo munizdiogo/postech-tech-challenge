@@ -1,8 +1,8 @@
 <?php
 
-namespace core\applications\services;
+namespace core\application\services;
 
-use core\applications\ports\PedidoServiceInterface;
+use core\application\ports\PedidoServiceInterface;
 use core\domain\entities\Pedido;
 use PDOException;
 
@@ -19,7 +19,7 @@ class PedidoService implements PedidoServiceInterface
     }
 
 
-    public function setNovoPedido(Pedido $pedido): bool
+    public function setNovoPedido(Pedido $pedido)
     {
         $idCliente = $pedido->getIdCliente();
         $produtos = $pedido->getProdutos();

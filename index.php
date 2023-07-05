@@ -9,9 +9,9 @@ use adapter\driver\AutenticacaoController;
 use adapter\driver\ClienteController;
 use adapter\driver\PedidoController;
 use adapter\driver\ProdutoController;
-use core\applications\services\ClienteService;
-use core\applications\services\PedidoService;
-use core\applications\services\ProdutoService;
+use core\application\services\ClienteService;
+use core\application\services\PedidoService;
+use core\application\services\ProdutoService;
 use Firebase\JWT\Key as Key;
 
 $clienteService = new ClienteService();

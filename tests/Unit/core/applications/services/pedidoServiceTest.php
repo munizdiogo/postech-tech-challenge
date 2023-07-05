@@ -1,6 +1,6 @@
 <?php
 
-use core\applications\services\PedidoService;
+use core\application\services\PedidoService;
 use core\domain\entities\Pedido;
 use core\domain\entities\Produto;
 use PHPUnit\Framework\TestCase;

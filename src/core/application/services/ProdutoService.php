@@ -1,8 +1,8 @@
 <?php
 
-namespace core\applications\services;
+namespace core\application\services;
 
-use core\applications\ports\ProdutoServiceInterface;
+use core\application\ports\ProdutoServiceInterface;
 use core\domain\entities\Produto;
 use PDOException;
 

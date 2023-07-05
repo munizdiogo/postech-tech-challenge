@@ -1,6 +1,6 @@
 <?php
 
-namespace core\applications\ports;
+namespace core\application\ports;
 
 use core\domain\entities\Cliente;
 

@@ -2,7 +2,7 @@
 
 namespace adapter\driver;
 
-use core\applications\ports\ProdutoServiceInterface;
+use core\application\ports\ProdutoServiceInterface;
 use core\domain\entities\Produto;
 
 class ProdutoController

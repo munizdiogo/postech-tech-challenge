@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use adapter\driver\ProdutoController;
-use core\applications\ports\ProdutoServiceInterface;
+use core\application\ports\ProdutoServiceInterface;
 use core\domain\entities\Produto;
 
 class ProdutoControllerTest extends TestCase
@@ -22,8 +22,8 @@ class ProdutoControllerTest extends TestCase
     public function testObterProdutosPorCategoriaComProdutosEncontrados()
     {
         $mockService = $this->createMock(ProdutoServiceInterface::class);
-        $mockService->method('getProdutosPorCategoria')->willReturn([["nome" => "Produto 1", "descricao" => "Descrição 1", "preco" => 10, "categoria" => "Categoria"],["nome" => "Produto 2", "descricao" => "Descrição 2", "preco" => 20, "categoria" => "Categoria"]]);
-        
+        $mockService->method('getProdutosPorCategoria')->willReturn([["nome" => "Produto 1", "descricao" => "Descrição 1", "preco" => 10, "categoria" => "Categoria"], ["nome" => "Produto 2", "descricao" => "Descrição 2", "preco" => 20, "categoria" => "Categoria"]]);
+
 
         $controller = new ProdutoController($mockService);
 
@@ -67,7 +67,7 @@ class ProdutoControllerTest extends TestCase
     public function testCadastrarProdutoJaExistente()
     {
         $mockService = $this->createMock(ProdutoServiceInterface::class);
-        $mockService->method('getProdutoPorNome')->willReturn(['nome' => 'Produto Existente','descricao' => 'Descrição','preco' => 10.0,'categoria' => 'Categoria']);
+        $mockService->method('getProdutoPorNome')->willReturn(['nome' => 'Produto Existente', 'descricao' => 'Descrição', 'preco' => 10.0, 'categoria' => 'Categoria']);
 
         $controller = new ProdutoController($mockService);
 
@@ -98,6 +98,25 @@ class ProdutoControllerTest extends TestCase
         ];
 
         $this->expectOutputString('{"mensagem":"Produto cadastrado com sucesso."}');
+        $controller->cadastrar($dados);
+    }
+
+    public function testCadastrarProdutoComErro()
+    {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService->method('getProdutoPorNome')->willReturn([]);
+        $mockService->method('setNovoProduto')->willReturn(false);
+
+        $controller = new ProdutoController($mockService);
+
+        $dados = [
+            'nome' => 'Novo Produto 2',
+            'descricao' => 'Descrição do novo produto 2',
+            'preco' => 21.0,
+            'categoria' => 'Categoria Nova 2',
+        ];
+
+        $this->expectOutputString('{"mensagem":"Ocorreu um erro ao salvar os dados do produto."}');
         $controller->cadastrar($dados);
     }
 
@@ -159,6 +178,26 @@ class ProdutoControllerTest extends TestCase
         $controller->editar($dados);
     }
 
+    public function testEditarProdutoComErro()
+    {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService->method('getProdutoPorId')->willReturn(['nome' => 'Produto Editado', 'descricao' => 'Descrição Editada', 'preco' => 30.0, 'categoria' => 'Categoria Editada']);
+        $mockService->method('setProduto')->willReturn(false);
+
+        $controller = new ProdutoController($mockService);
+
+        $dados = [
+            'id' => 1,
+            'nome' => 'Produto Editado',
+            'descricao' => 'Descrição Editada',
+            'preco' => 30.0,
+            'categoria' => 'Categoria Editada',
+        ];
+
+        $this->expectOutputString('{"mensagem":"Ocorreu um erro ao atualizar os dados do produto."}');
+        $controller->editar($dados);
+    }
+
 
     // Excluir
     public function testExcluirProdutoComIdVazio()
@@ -199,6 +238,20 @@ class ProdutoControllerTest extends TestCase
         $id = 1;
 
         $this->expectOutputString('{"mensagem":"Produto excluído com sucesso."}');
+        $controller->excluir($id);
+    }
+
+    public function testExcluirProdutoComErro()
+    {
+        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService->method('getProdutoPorId')->willReturn(["nome" => "Produto Existente", "descricao" => "Descrição", "preco" => 10.0, "categoria" => "Categoria"]);
+        $mockService->method('setExcluirProdutoPorId')->willReturn(false);
+
+        $controller = new ProdutoController($mockService);
+
+        $id = 1;
+
+        $this->expectOutputString('{"mensagem":"Ocorreu um erro ao excluir o produto."}');
         $controller->excluir($id);
     }
 }

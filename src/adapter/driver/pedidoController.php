@@ -2,8 +2,8 @@
 
 namespace adapter\driver;
 
-use core\applications\ports\ClienteServiceInterface;
-use core\applications\ports\PedidoServiceInterface;
+use core\application\ports\ClienteServiceInterface;
+use core\application\ports\PedidoServiceInterface;
 use core\domain\entities\Pedido;
 use core\domain\entities\Produto;
 
@@ -57,7 +57,7 @@ class PedidoController
         }
     }
 
-    public function obterPedidos(): void
+    public function obterPedidos()
     {
         $pedidosFormatados = [];
         $pedidos = $this->pedidoService->getPedidos();

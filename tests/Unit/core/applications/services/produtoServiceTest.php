@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use core\applications\services\ProdutoService;
+use core\application\services\ProdutoService;
 use core\domain\entities\Produto;
 
 class ProdutoServiceTest extends TestCase
