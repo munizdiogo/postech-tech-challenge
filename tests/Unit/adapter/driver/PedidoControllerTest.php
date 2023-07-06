@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use adapter\driver\PedidoController;
-use core\application\ports\pedidoServiceInterface;
+use core\application\ports\PedidoServiceInterface;
 use core\application\ports\ClienteServiceInterface;
 
 class PedidoControllerTest extends TestCase

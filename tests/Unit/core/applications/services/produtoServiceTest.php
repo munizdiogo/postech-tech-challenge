@@ -56,4 +56,52 @@ class ProdutoServiceTest extends TestCase
 
 
     }
+
+    public function testCadastrarNovoProdutoComSucesso()
+    {
+        $produtoDomainMock = $this->createMock(ProdutoService::class);
+
+        $produtoEntity = new Produto('Hamburguer', 'Hamburguer de carne', 19.20, 'lanche');
+
+        $produtoDomainMock->expects($this->once())
+            ->method('setNovoProduto')
+            ->with($produtoEntity)
+            ->willReturn(true);
+
+        $resultado = $produtoDomainMock->setNovoProduto($produtoEntity);
+
+        $this->assertTrue($resultado);
+    }
+
+    public function testEditarProdutoComSucesso()
+    {
+        $produtoDomainMock = $this->createMock(ProdutoService::class);
+
+        $produtoEntity = new Produto('Hamburguer-X', 'Hamburguer-X de carne', 21.50, 'lanche');
+
+        $produtoDomainMock->expects($this->once())
+            ->method('setProduto')
+            ->with($produtoEntity)
+            ->willReturn(true);
+
+        $resultado = $produtoDomainMock->setProduto($produtoEntity);
+
+        $this->assertTrue($resultado);
+    }
+
+    public function testExcluirProdutoComSucesso()
+    {
+        $produtoDomainMock = $this->createMock(ProdutoService::class);
+        $idProdutoMock = 1;
+
+        $produtoDomainMock->expects($this->once())
+            ->method('setExcluirProdutoPorId')
+            ->with($idProdutoMock)
+            ->willReturn(true);
+
+        $resultado = $produtoDomainMock->setExcluirProdutoPorId($idProdutoMock);
+
+        $this->assertTrue($resultado);
+    }
+
 }
