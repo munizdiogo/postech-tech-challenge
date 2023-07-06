@@ -11,17 +11,68 @@ class PedidoServiceTest extends TestCase
     public function testGetProdutosPorIdPedido(): void
     {
     
-        $oedidoServiceMock = $this->createMock(PedidoService::class);
+        $pedidoServiceMock = $this->createMock(PedidoService::class);
         $idPedido = '1';
 
-        $oedidoServiceMock->expects($this->once())
+        $pedidoServiceMock->expects($this->once())
             ->method('getProdutosPorIdPedido')
             ->with($idPedido)
             ->willReturn(['id' => 1, 'nome' => 'Lanche 1', 'descricao' => 'Descrição Lanche 1', 'preco' => 10.0, 'categoria' => 'lanche']);
 
-        $resultado = $oedidoServiceMock->getProdutosPorIdPedido($idPedido);
+        $resultado = $pedidoServiceMock->getProdutosPorIdPedido($idPedido);
 
         $this->assertEquals(['id' => 1, 'nome' => 'Lanche 1', 'descricao' => 'Descrição Lanche 1', 'preco' => 10.0, 'categoria' => 'lanche'], $resultado);
+    }
+
+    public function testGetPedidos(): void
+    {
+    
+        $pedidoServiceMock = $this->createMock(PedidoService::class);
+
+        $pedidoServiceMock->expects($this->once())
+            ->method('getPedidos')
+            ->willReturn(['id' => 1, 'data_criacao' => '2023-06-25 18:00:00', 'data_alteracao' => '2023-06-25 18:00:00', 'status' => 'realizado', 'cliente_id' => 1]);
+
+        $resultado = $pedidoServiceMock->getPedidos();
+
+        $this->assertEquals(['id' => 1, 'data_criacao' => '2023-06-25 18:00:00', 'data_alteracao' => '2023-06-25 18:00:00', 'status' => 'realizado', 'cliente_id' => 1], $resultado);
+    }
+
+
+    public function testCadastrarNovoPedidoComSucesso()
+    {
+        $pedidoDomainMock = $this->createMock(PedidoService::class);
+
+        $produdo1 = new Produto('Hamburguer', 'Hamburguer de carne', 19.20, 'lanche');
+        $produdo2 = new Produto('Hamburguer-X', 'Hamburguer-X de carne', 22.50, 'lanche');
+        $pedidoEntity = new Pedido('recebido', 1, [$produdo1, $produdo2]);
+
+        $pedidoDomainMock->expects($this->once())
+            ->method('setNovoPedido')
+            ->with($pedidoEntity)
+            ->willReturn(true);
+
+        $resultado = $pedidoDomainMock->setNovoPedido($pedidoEntity);
+
+        $this->assertTrue($resultado);
+    }
+    
+    public function testCadastrarNovoPedidoComSucesso()
+    {
+        $pedidoDomainMock = $this->createMock(PedidoService::class);
+
+        $produdo1 = new Produto('Hamburguer', 'Hamburguer de carne', 19.20, 'lanche');
+        $produdo2 = new Produto('Hamburguer-X', 'Hamburguer-X de carne', 22.50, 'lanche');
+        $pedidoEntity = new Pedido('recebido', 1, [$produdo1, $produdo2]);
+
+        $pedidoDomainMock->expects($this->once())
+            ->method('setNovoPedido')
+            ->with($pedidoEntity)
+            ->willReturn(true);
+
+        $resultado = $pedidoDomainMock->setNovoPedido($pedidoEntity);
+
+        $this->assertTrue($resultado);
     }
 
    
