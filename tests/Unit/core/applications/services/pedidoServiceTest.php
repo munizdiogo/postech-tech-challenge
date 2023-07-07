@@ -10,7 +10,7 @@ class PedidoServiceTest extends TestCase
 
     public function testGetProdutosPorIdPedido(): void
     {
-    
+
         $pedidoServiceMock = $this->createMock(PedidoService::class);
         $idPedido = '1';
 
@@ -24,9 +24,25 @@ class PedidoServiceTest extends TestCase
         $this->assertEquals(['id' => 1, 'nome' => 'Lanche 1', 'descricao' => 'Descrição Lanche 1', 'preco' => 10.0, 'categoria' => 'lanche'], $resultado);
     }
 
+    public function testGetProdutosPorIdPedidoComProdutosNaoEncontrados(): void
+    {
+
+        $pedidoServiceMock = $this->createMock(PedidoService::class);
+        $idPedido = '1';
+
+        $pedidoServiceMock->expects($this->once())
+            ->method('getProdutosPorIdPedido')
+            ->with($idPedido)
+            ->willReturn([]);
+
+        $resultado = $pedidoServiceMock->getProdutosPorIdPedido($idPedido);
+
+        $this->assertEquals([], $resultado);
+    }
+
     public function testGetPedidos(): void
     {
-    
+
         $pedidoServiceMock = $this->createMock(PedidoService::class);
 
         $pedidoServiceMock->expects($this->once())
@@ -38,6 +54,19 @@ class PedidoServiceTest extends TestCase
         $this->assertEquals(['id' => 1, 'data_criacao' => '2023-06-25 18:00:00', 'data_alteracao' => '2023-06-25 18:00:00', 'status' => 'realizado', 'cliente_id' => 1], $resultado);
     }
 
+    public function testGetPedidosComNenhumPedidoEncontrado(): void
+    {
+
+        $pedidoServiceMock = $this->createMock(PedidoService::class);
+
+        $pedidoServiceMock->expects($this->once())
+            ->method('getPedidos')
+            ->willReturn([]);
+
+        $resultado = $pedidoServiceMock->getPedidos();
+
+        $this->assertEquals([], $resultado);
+    }
 
     public function testCadastrarNovoPedidoComSucesso()
     {
@@ -56,8 +85,8 @@ class PedidoServiceTest extends TestCase
 
         $this->assertTrue($resultado);
     }
-    
-    public function testCadastrarNovoPedidoComSucesso()
+
+    public function testCadastrarNovoPedidoComErro()
     {
         $pedidoDomainMock = $this->createMock(PedidoService::class);
 
@@ -68,12 +97,10 @@ class PedidoServiceTest extends TestCase
         $pedidoDomainMock->expects($this->once())
             ->method('setNovoPedido')
             ->with($pedidoEntity)
-            ->willReturn(true);
+            ->willReturn(false);
 
         $resultado = $pedidoDomainMock->setNovoPedido($pedidoEntity);
 
-        $this->assertTrue($resultado);
+        $this->assertFalse($resultado);
     }
-
-   
 }

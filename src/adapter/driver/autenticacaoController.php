@@ -53,8 +53,6 @@ class AutenticacaoController
         }
     }
 
-
-
     // Função para verificar o token JWT
     function validarTokenJWT($token, $chaveSecreta)
     {
