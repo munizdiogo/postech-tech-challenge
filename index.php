@@ -2,8 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 require_once 'vendor/autoload.php';
 
-
-(new adapter\driver\dotEnvEnvironment)->load();
+(new adapter\driver\DotEnvEnvironment)->load();
 
 use adapter\driver\AutenticacaoController;
 use adapter\driver\ClienteController;
@@ -25,20 +24,20 @@ $pedidoController = new PedidoController($pedidoService, $clienteService);
 
 $autenticacaoController = new AutenticacaoController();
 
+$chaveSecreta = $_ENV['CHAVE_SECRETA'] ?? "";
 
+if (isset($_GET['acao']) && $_GET['acao'] == 'gerarToken') {
+    if (empty($_POST['chaveSecreta'])) {
+        retornarRespostaJSON("É obrigatório informar a chaveSecreta", 401);
+        exit;
+    }
 
-$chaveSecreta = $_ENV['CHAVE_SECRETA'];
-
-
-
-if (isset($_GET['acao']) && $_GET['acao'] == 'gerar') {
-    if ($GLOBALS['chaveSecreta'] == $_POST['chaveSecreta']) {
+    if ($_POST['chaveSecreta'] == $chaveSecreta) {
         echo $autenticacaoController->gerarTokenJWT('', $_POST['chaveSecreta']);
     }
 } else {
     $retornoValidacaoAcesso = validarAcesso();
     $jsonRetornoValidacaoAcesso = json_decode($retornoValidacaoAcesso);
-
 
     if ($jsonRetornoValidacaoAcesso->status) {
 
@@ -111,13 +110,13 @@ function validarAcesso()
                 if (http_response_code() == 200) {
                     return json_encode(array('status' => true, 'mensagem' => $dadosUsuario));
                 } else {
-                    return json_encode(array('status' => false, 'mensagem' => 'Token nao encontrado'));
+                    return json_encode(array('status' => false, 'mensagem' => 'Token não encontrado 1'));
                 }
             }
         } else {
-            return json_encode(array('status' => false, 'mensagem' => 'Token nao encontrado'));
+            return json_encode(array('status' => false, 'mensagem' => 'Token não encontrado 2'));
         }
     } else {
-        return json_encode(array('status' => false, 'mensagem' => 'Token nao encontrado'));
+        return json_encode(array('status' => false, 'mensagem' => 'Token não informado'));
     }
 }

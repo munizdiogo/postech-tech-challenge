@@ -68,7 +68,7 @@ class PedidoServiceTest extends TestCase
         $this->assertEquals([], $resultado);
     }
 
-    public function testCadastrarNovoPedidoComSucesso()
+    public function testSetNovoPedidoComSucesso()
     {
         $pedidoDomainMock = $this->createMock(PedidoService::class);
 
@@ -86,7 +86,7 @@ class PedidoServiceTest extends TestCase
         $this->assertTrue($resultado);
     }
 
-    public function testCadastrarNovoPedidoComErro()
+    public function testSetNovoPedidoComErro()
     {
         $pedidoDomainMock = $this->createMock(PedidoService::class);
 

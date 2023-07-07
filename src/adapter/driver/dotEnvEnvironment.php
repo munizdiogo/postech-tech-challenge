@@ -6,7 +6,7 @@ class DotEnvEnvironment
 {
     public function load(): void
     {
-        $lines = file($_SERVER["DOCUMENT_ROOT"]. ".env");
+        $lines = file("/var/www/html/.env");
         foreach ($lines as $line) {
             [$key, $value] = explode('=', $line, 2);
             $key = trim($key);
