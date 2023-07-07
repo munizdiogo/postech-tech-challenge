@@ -4,9 +4,9 @@ namespace adapter\driver;
 
 class DotEnvEnvironment
 {
-    public function load($path): void
+    public function load(): void
     {
-        $lines = file($path . '/.env');
+        $lines = file($_SERVER["DOCUMENT_ROOT"]. ".env");
         foreach ($lines as $line) {
             [$key, $value] = explode('=', $line, 2);
             $key = trim($key);

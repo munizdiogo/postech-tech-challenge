@@ -3,7 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 require_once 'vendor/autoload.php';
 
 
-(new adapter\driver\dotEnvEnvironment)->load(__DIR__);
+(new adapter\driver\dotEnvEnvironment)->load();
 
 use adapter\driver\AutenticacaoController;
 use adapter\driver\ClienteController;
