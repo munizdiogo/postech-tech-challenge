@@ -30,6 +30,7 @@ Em seguida crie um arquivo com o nome ".env", com o conteúdo abaixo:
   DB_USERNAME=root
   DB_PASSWORD=secret
   DB_PORT=3306
+  DB_PORT=07F6GbwjwfT419CBBi4
 ```
 
 
