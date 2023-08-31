@@ -1,97 +1,97 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use core\application\services\ClienteService;
+use gateways\ClienteGateway;
 use core\domain\entities\Cliente;
 
-class ClienteServiceTest extends TestCase
+class ClienteGatewayTest extends TestCase
 {
-    public function testCadastrarClienteComSucesso()
+    public function testsetClienteComSucesso()
     {
-        $clienteDomainMock = $this->createMock(ClienteService::class);
+        $clienteDomainMock = $this->createMock(ClienteGateway::class);
 
         $clienteEntity = new Cliente('José', 'jose@teste.com', '12345678900');
 
         $clienteDomainMock->expects($this->once())
-            ->method('cadastrarCliente')
+            ->method('setCliente')
             ->with($clienteEntity)
             ->willReturn(true);
 
 
-        $resultado = $clienteDomainMock->cadastrarCliente($clienteEntity);
+        $resultado = $clienteDomainMock->setCliente($clienteEntity);
 
         $this->assertTrue($resultado);
     }
 
-    public function testCadastrarClienteComErro()
+    public function testsetClienteComErro()
     {
-        $clienteDomainMock = $this->createMock(ClienteService::class);
+        $clienteDomainMock = $this->createMock(ClienteGateway::class);
 
         $clienteEntity = new Cliente('José', 'jose@teste.com', '12345678900');
 
         $clienteDomainMock->expects($this->once())
-            ->method('cadastrarCliente')
+            ->method('setCliente')
             ->with($clienteEntity)
             ->willReturn(false);
 
 
-        $resultado = $clienteDomainMock->cadastrarCliente($clienteEntity);
+        $resultado = $clienteDomainMock->setCliente($clienteEntity);
 
         $this->assertFalse($resultado);
     }
 
-    public function testObterClientePorCpf()
+    public function testgetClientePorCPF()
     {
-        $clienteDomainMock = $this->createMock(ClienteService::class);
+        $clienteDomainMock = $this->createMock(ClienteGateway::class);
 
         $clienteDomainMock->expects($this->once())
-            ->method('obterClientePorCPF')
+            ->method('getClientePorCPF')
             ->with('12345678900')
             ->willReturn(['id' => 1, 'cpf' => '12345678900', 'nome' => 'José', 'email' => 'jose@teste.com']);
 
-        $resultado = $clienteDomainMock->obterClientePorCPF('12345678900');
+        $resultado = $clienteDomainMock->getClientePorCPF('12345678900');
 
         $this->assertEquals(['id' => 1, 'cpf' => '12345678900', 'nome' => 'José', 'email' => 'jose@teste.com'], $resultado);
     }
 
-    public function testObterClientePorCpfNaoEncontrado()
+    public function testgetClientePorCPFNaoEncontrado()
     {
-        $clienteDomainMock = $this->createMock(ClienteService::class);
+        $clienteDomainMock = $this->createMock(ClienteGateway::class);
 
         $clienteDomainMock->expects($this->once())
-            ->method('obterClientePorCPF')
+            ->method('getClientePorCPF')
             ->with('123456789001')
             ->willReturn([]);
 
-        $resultado = $clienteDomainMock->obterClientePorCPF('123456789001');
+        $resultado = $clienteDomainMock->getClientePorCPF('123456789001');
 
         $this->assertEquals([], $resultado);
     }
 
-    public function testValidarClientePorIdComSucesso()
+    public function testgetClientePorIdComSucesso()
     {
-        $clienteDomainMock = $this->createMock(ClienteService::class);
+        $clienteDomainMock = $this->createMock(ClienteGateway::class);
 
         $clienteDomainMock->expects($this->once())
-            ->method('validarClientePorId')
+            ->method('getClientePorId')
             ->with('123')
             ->willReturn(true);
 
-        $resultado = $clienteDomainMock->validarClientePorId('123');
+        $resultado = $clienteDomainMock->getClientePorId('123');
 
         $this->assertTrue($resultado);
     }
 
-    public function testValidarClientePorIdComErro()
+    public function testgetClientePorIdComErro()
     {
-        $clienteDomainMock = $this->createMock(ClienteService::class);
+        $clienteDomainMock = $this->createMock(ClienteGateway::class);
 
         $clienteDomainMock->expects($this->once())
-            ->method('validarClientePorId')
+            ->method('getClientePorId')
             ->with('123')
             ->willReturn(false);
 
-        $resultado = $clienteDomainMock->validarClientePorId('123');
+        $resultado = $clienteDomainMock->getClientePorId('123');
 
         $this->assertFalse($resultado);
     }

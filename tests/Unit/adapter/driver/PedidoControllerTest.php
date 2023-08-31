@@ -1,9 +1,9 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use adapter\driver\PedidoController;
-use core\application\ports\PedidoServiceInterface;
-use core\application\ports\ClienteServiceInterface;
+use controllers\PedidoController;
+use core\application\ports\PedidoGatewayInterface;
+use interfaces\gateways;
 
 class PedidoControllerTest extends TestCase
 {
@@ -29,11 +29,11 @@ class PedidoControllerTest extends TestCase
             ]
         ];
 
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
-        $pedidoServiceMock = $this->createMock(PedidoServiceInterface::class);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
+        $pedidoServiceMock = $this->createMock(PedidoGatewayInterface::class);
 
-        $clienteServiceMock->expects($this->once())
-            ->method('validarClientePorId')
+        $ClienteGatewayMock->expects($this->once())
+            ->method('getClientePorId')
             ->with($this->equalTo("123"))
             ->willReturn(true);
 
@@ -41,7 +41,7 @@ class PedidoControllerTest extends TestCase
             ->method('setNovoPedido')
             ->willReturn(1);
 
-        $pedidoController = new PedidoController($pedidoServiceMock, $clienteServiceMock);
+        $pedidoController = new PedidoController($pedidoServiceMock, $ClienteGatewayMock);
 
         $pedidoController->cadastrar($dados);
 
@@ -70,11 +70,11 @@ class PedidoControllerTest extends TestCase
             ]
         ];
 
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
-        $pedidoServiceMock = $this->createMock(PedidoServiceInterface::class);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
+        $pedidoServiceMock = $this->createMock(PedidoGatewayInterface::class);
 
-        $clienteServiceMock->expects($this->once())
-            ->method('validarClientePorId')
+        $ClienteGatewayMock->expects($this->once())
+            ->method('getClientePorId')
             ->with($this->equalTo("123"))
             ->willReturn(true);
 
@@ -82,7 +82,7 @@ class PedidoControllerTest extends TestCase
             ->method('setNovoPedido')
             ->willReturn(false);
 
-        $pedidoController = new PedidoController($pedidoServiceMock, $clienteServiceMock);
+        $pedidoController = new PedidoController($pedidoServiceMock, $ClienteGatewayMock);
 
         $pedidoController->cadastrar($dados);
 
@@ -96,9 +96,9 @@ class PedidoControllerTest extends TestCase
             "produtos" => []
         ];
 
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
-        $pedidoServiceMock = $this->createMock(PedidoServiceInterface::class);
-        $pedidoController = new PedidoController($pedidoServiceMock, $clienteServiceMock);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
+        $pedidoServiceMock = $this->createMock(PedidoGatewayInterface::class);
+        $pedidoController = new PedidoController($pedidoServiceMock, $ClienteGatewayMock);
 
         $pedidoController->cadastrar($dados);
 
@@ -127,15 +127,15 @@ class PedidoControllerTest extends TestCase
             ]
         ];
 
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
-        $pedidoServiceMock = $this->createMock(PedidoServiceInterface::class);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
+        $pedidoServiceMock = $this->createMock(PedidoGatewayInterface::class);
 
-        $clienteServiceMock->expects($this->once())
-            ->method('validarClientePorId')
+        $ClienteGatewayMock->expects($this->once())
+            ->method('getClientePorId')
             ->with($this->equalTo("123"))
             ->willReturn(false);
 
-        $pedidoController = new PedidoController($pedidoServiceMock, $clienteServiceMock);
+        $pedidoController = new PedidoController($pedidoServiceMock, $ClienteGatewayMock);
 
         $pedidoController->cadastrar($dados);
 
@@ -182,8 +182,8 @@ class PedidoControllerTest extends TestCase
             ]
         ];
 
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
-        $pedidoServiceMock = $this->createMock(PedidoServiceInterface::class);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
+        $pedidoServiceMock = $this->createMock(PedidoGatewayInterface::class);
 
         $pedidoServiceMock->expects($this->once())
             ->method('getPedidos')
@@ -196,7 +196,7 @@ class PedidoControllerTest extends TestCase
                 [2, $produtosPedido2]
             ]);
 
-        $pedidoController = new PedidoController($pedidoServiceMock, $clienteServiceMock);
+        $pedidoController = new PedidoController($pedidoServiceMock, $ClienteGatewayMock);
 
         $pedidoController->obterPedidos();
 
@@ -205,14 +205,14 @@ class PedidoControllerTest extends TestCase
 
     public function testObterPedidosComNenhumPedidoEncontrado()
     {
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
-        $pedidoServiceMock = $this->createMock(PedidoServiceInterface::class);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
+        $pedidoServiceMock = $this->createMock(PedidoGatewayInterface::class);
 
         $pedidoServiceMock->expects($this->once())
             ->method('getPedidos')
             ->willReturn([]);
 
-        $pedidoController = new PedidoController($pedidoServiceMock, $clienteServiceMock);
+        $pedidoController = new PedidoController($pedidoServiceMock, $ClienteGatewayMock);
 
         $pedidoController->obterPedidos();
 

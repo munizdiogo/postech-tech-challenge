@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use core\application\services\Database;
+use gateways\Database;
 class DatabaseTest extends TestCase
 {
     public function testGetConexao()

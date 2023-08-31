@@ -1,21 +1,21 @@
 <?php
 
-namespace adapter\driver;
+namespace controllers;
 
-use core\application\ports\ClienteServiceInterface;
-use core\application\ports\PedidoServiceInterface;
+use interfaces\gateways;
+use core\application\ports\PedidoGatewayInterface;
 use core\domain\entities\Pedido;
 use core\domain\entities\Produto;
 
 class PedidoController
 {
     private $pedidoService;
-    private $clienteService;
+    private $ClienteGateway;
 
-    public function __construct(PedidoServiceInterface $pedidoService, ClienteServiceInterface $clienteService)
+    public function __construct(PedidoGatewayInterface $pedidoService, ClienteGatewayInterface $ClienteGateway)
     {
         $this->pedidoService = $pedidoService;
-        $this->clienteService = $clienteService;
+        $this->ClienteGateway = $ClienteGateway;
     }
 
     public function cadastrar(array $dados)
@@ -38,7 +38,7 @@ class PedidoController
             return;
         }
 
-        $clienteValido = $this->clienteService->validarClientePorId($idCliente);
+        $clienteValido = $this->ClienteGateway->getClientePorId($idCliente);
 
 
         if ($clienteValido) {

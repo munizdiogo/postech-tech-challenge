@@ -1,6 +1,6 @@
 <?php
 
-namespace adapter\driver;
+namespace controllers;
 
 use Exception;
 use Firebase\JWT\JWT;

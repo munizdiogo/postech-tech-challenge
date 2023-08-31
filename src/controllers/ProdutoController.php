@@ -1,15 +1,15 @@
 <?php
 
-namespace adapter\driver;
+namespace controllers;
 
-use core\application\ports\ProdutoServiceInterface;
+use core\application\ports\ProdutoGatewayInterface;
 use core\domain\entities\Produto;
 
 class ProdutoController
 {
     private $produtoService;
 
-    public function __construct(ProdutoServiceInterface $produtoService)
+    public function __construct(ProdutoGatewayInterface $produtoService)
     {
         $this->produtoService = $produtoService;
     }

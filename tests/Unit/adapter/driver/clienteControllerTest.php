@@ -1,24 +1,24 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use adapter\driver\ClienteController;
-use core\application\ports\clienteServiceInterface;
+use controllers\ClienteController;
+use interfaces\gateways;
 
 class ClienteControllerTest extends TestCase
 {
-    public function testCadastrarClienteComSucesso()
+    public function testsetClienteComSucesso()
     {
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
 
-        $clienteServiceMock->expects($this->once())
-            ->method('obterClientePorCPF')
+        $ClienteGatewayMock->expects($this->once())
+            ->method('getClientePorCPF')
             ->willReturn(false);
 
-        $clienteServiceMock->expects($this->once())
-            ->method('cadastrarCliente')
+        $ClienteGatewayMock->expects($this->once())
+            ->method('setCliente')
             ->willReturn(true);
 
-        $clienteController = new ClienteController($clienteServiceMock);
+        $clienteController = new ClienteController($ClienteGatewayMock);
 
         $dados = [
             'nome' => 'João',
@@ -31,19 +31,19 @@ class ClienteControllerTest extends TestCase
         $this->expectOutputString('{"mensagem":"Cliente criado com sucesso."}');
     }
 
-    public function testCadastrarClienteErroAoSalvarDados()
+    public function testsetClienteErroAoSalvarDados()
     {
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
 
-        $clienteServiceMock->expects($this->once())
-            ->method('obterClientePorCPF')
+        $ClienteGatewayMock->expects($this->once())
+            ->method('getClientePorCPF')
             ->willReturn(false);
 
-        $clienteServiceMock->expects($this->once())
-            ->method('cadastrarCliente')
+        $ClienteGatewayMock->expects($this->once())
+            ->method('setCliente')
             ->willReturn(false);
 
-        $clienteController = new ClienteController($clienteServiceMock);
+        $clienteController = new ClienteController($ClienteGatewayMock);
 
         $dados = [
             'nome' => 'João',
@@ -56,15 +56,15 @@ class ClienteControllerTest extends TestCase
         $this->expectOutputString('{"mensagem":"Ocorreu um erro ao salvar os dados do cliente."}');
     }
 
-    public function testCadastrarClienteJaCadastrado()
+    public function testsetClienteJaCadastrado()
     {
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
 
-        $clienteServiceMock->expects($this->once())
-            ->method('obterClientePorCPF')
+        $ClienteGatewayMock->expects($this->once())
+            ->method('getClientePorCPF')
             ->willReturn(true);
 
-        $clienteController = new ClienteController($clienteServiceMock);
+        $clienteController = new ClienteController($ClienteGatewayMock);
 
         $dados = [
             'nome' => 'João',
@@ -76,10 +76,10 @@ class ClienteControllerTest extends TestCase
         $this->expectOutputString('{"mensagem":"Já existe um cliente cadastrado com este CPF."}');
     }
 
-    public function testCadastrarClienteComCamposObrigatoriosNaoPreenchidos()
+    public function testsetClienteComCamposObrigatoriosNaoPreenchidos()
     {
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
-        $clienteController = new ClienteController($clienteServiceMock);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
+        $clienteController = new ClienteController($ClienteGatewayMock);
 
         $dados = [
             'nome' => '',
@@ -94,21 +94,21 @@ class ClienteControllerTest extends TestCase
 
     public function testBuscarClientePorCpfComCampoObrigatorioNaoPreenchido()
     {
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
-        $clienteController = new ClienteController($clienteServiceMock);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
+        $clienteController = new ClienteController($ClienteGatewayMock);
         $clienteController->buscarClientePorCPF('');
         $this->expectOutputString('{"mensagem":"O campo CPF é obrigatório."}');
     }
 
     public function testBuscarClientePorCpf()
     {
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
 
-        $clienteServiceMock->expects($this->once())
-            ->method('obterClientePorCPF')
+        $ClienteGatewayMock->expects($this->once())
+            ->method('getClientePorCPF')
             ->willReturn(['nome' => 'João', 'email' => 'joao@example.com', 'cpf' => '12345678901']);
 
-        $clienteController = new ClienteController($clienteServiceMock);
+        $clienteController = new ClienteController($ClienteGatewayMock);
 
         $clienteController->buscarClientePorCPF('123.456.789-01');
 
@@ -117,13 +117,13 @@ class ClienteControllerTest extends TestCase
 
     public function testBuscarClientePorCpfNaoEncontrado()
     {
-        $clienteServiceMock = $this->createMock(ClienteServiceInterface::class);
+        $ClienteGatewayMock = $this->createMock(ClienteGatewayInterface::class);
 
-        $clienteServiceMock->expects($this->once())
-            ->method('obterClientePorCPF')
+        $ClienteGatewayMock->expects($this->once())
+            ->method('getClientePorCPF')
             ->willReturn([]);
 
-        $clienteController = new ClienteController($clienteServiceMock);
+        $clienteController = new ClienteController($ClienteGatewayMock);
 
         $clienteController->buscarClientePorCPF('123456789015');
 

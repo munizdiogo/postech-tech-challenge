@@ -1,6 +1,6 @@
 <?php
 
-namespace adapter\driver;
+namespace controllers;
 
 class DotEnvEnvironment
 {

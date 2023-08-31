@@ -1,12 +1,12 @@
 <?php
 
-namespace core\application\services;
+namespace gateways;
 
-use core\application\ports\ProdutoServiceInterface;
+use core\application\ports\ProdutoGatewayInterface;
 use core\domain\entities\Produto;
 use PDOException;
 
-class ProdutoService implements ProdutoServiceInterface
+class ProdutoService implements ProdutoGatewayInterface
 {
     private $database;
     private $db;

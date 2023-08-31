@@ -1,12 +1,12 @@
 <?php
 
-namespace core\application\services;
+namespace gateways;
 
-use core\application\ports\PedidoServiceInterface;
+use core\application\ports\PedidoGatewayInterface;
 use core\domain\entities\Pedido;
 use PDOException;
 
-class PedidoService implements PedidoServiceInterface
+class PedidoService implements PedidoGatewayInterface
 {
     private $database;
     private $db;

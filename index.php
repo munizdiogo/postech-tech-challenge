@@ -1,29 +1,27 @@
 <?php
+use external\MySqlConnection;
 header('Content-Type: application/json; charset=utf-8');
 require_once 'vendor/autoload.php';
 
-(new adapter\driver\DotEnvEnvironment)->load();
-
-use adapter\driver\AutenticacaoController;
-use adapter\driver\ClienteController;
-use adapter\driver\PedidoController;
-use adapter\driver\ProdutoController;
-use core\application\services\ClienteService;
-use core\application\services\PedidoService;
-use core\application\services\ProdutoService;
+(new controllers\DotEnvEnvironment)->load();
+use controllers\AutenticacaoController;
+use controllers\ClienteController;
+use controllers\PedidoController;
+use controllers\ProdutoController;
+use interfaces\DbConnection;
+use gateways\ClienteGateway;
+use gateways\Database;
 use Firebase\JWT\Key as Key;
 
-$clienteService = new ClienteService();
-$clienteController = new ClienteController($clienteService);
-
-$produtoService = new ProdutoService();
-$produtoController = new ProdutoController($produtoService);
-
-$pedidoService = new PedidoService();
-$pedidoController = new PedidoController($pedidoService, $clienteService);
+$dbConnection = new MySqlConnection();
+$clienteGateway = new ClienteGateway($dbConnection);
+$clienteController = new ClienteController();
+// $produtoService = new ProdutoService();
+// $produtoController = new ProdutoController($produtoService);
+// $pedidoService = new PedidoService();
+// $pedidoController = new PedidoController($pedidoService, $ClienteGateway);
 
 $autenticacaoController = new AutenticacaoController();
-
 $chaveSecreta = $_ENV['CHAVE_SECRETA'] ?? "";
 
 if (isset($_GET['acao']) && $_GET['acao'] == 'gerarToken') {
@@ -44,38 +42,45 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'gerarToken') {
         if (!empty($_GET["acao"])) {
             switch ($_GET["acao"]) {
                 case "cadastrarCliente":
-                    $clienteController->cadastrar($_POST);
+                    $salvarDados = $clienteController->cadastrarCliente($dbConnection, $_POST);
+                    var_dump($salvarDados);
+                    exit;
+                    if ($salvarDados) {
+                        retornarRespostaJSON("Cliente criado com sucesso.", 201);
+                    } else {
+                        retornarRespostaJSON("Ocorreu um erro ao salvar os dados do cliente.", 500);
+                    }
                     break;
 
-                case "obterClientePorCPF":
-                    $clienteController->buscarClientePorCPF($_GET["cpf"]);
-                    break;
+                // case "getClientePorCPF":
+                //     $clienteController->buscarClientePorCPF($_GET["cpf"]);
+                //     break;
 
-                case "cadastrarProduto":
-                    $produtoController->cadastrar($_POST);
-                    break;
+                // case "cadastrarProduto":
+                //     $produtoController->cadastrar($_POST);
+                //     break;
 
-                case "editarProduto":
-                    $produtoController->editar($_POST);
-                    break;
+                // case "editarProduto":
+                //     $produtoController->editar($_POST);
+                //     break;
 
-                case "excluirProduto":
-                    $produtoController->excluir($_POST["id"]);
-                    break;
+                // case "excluirProduto":
+                //     $produtoController->excluir($_POST["id"]);
+                //     break;
 
-                case "obterProdutosPorCategoria":
-                    $produtoController->obterProdutosPorCategoria($_GET["categoria"]);
-                    break;
+                // case "obterProdutosPorCategoria":
+                //     $produtoController->obterProdutosPorCategoria($_GET["categoria"]);
+                //     break;
 
-                case "cadastrarNovoPedido":
-                    $jsonDados = file_get_contents("php://input");
-                    $dados = json_decode($jsonDados, true);
-                    $pedidoController->cadastrar($dados);
-                    break;
+                // case "cadastrarNovoPedido":
+                //     $jsonDados = file_get_contents("php://input");
+                //     $dados = json_decode($jsonDados, true);
+                //     $pedidoController->cadastrar($dados);
+                //     break;
 
-                case "obterPedidos":
-                    $pedidoController->obterPedidos();
-                    break;
+                // case "obterPedidos":
+                //     $pedidoController->obterPedidos();
+                //     break;
 
                 default:
                     echo '{"mensagem": "A ação informada é inválida."}';

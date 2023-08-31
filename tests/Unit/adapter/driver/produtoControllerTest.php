@@ -1,8 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use adapter\driver\ProdutoController;
-use core\application\ports\ProdutoServiceInterface;
+use controllers\ProdutoController;
+use core\application\ports\ProdutoGatewayInterface;
 use core\domain\entities\Produto;
 
 class ProdutoControllerTest extends TestCase
@@ -10,7 +10,7 @@ class ProdutoControllerTest extends TestCase
     // Consultar
     public function testObterProdutosPorCategoriaComNomeVazio()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $controller = new ProdutoController($mockService);
 
         $nome = '';
@@ -21,7 +21,7 @@ class ProdutoControllerTest extends TestCase
 
     public function testObterProdutosPorCategoriaComProdutosEncontrados()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $mockService->method('getProdutosPorCategoria')->willReturn([["nome" => "Produto 1", "descricao" => "Descrição 1", "preco" => 10, "categoria" => "Categoria"], ["nome" => "Produto 2", "descricao" => "Descrição 2", "preco" => 20, "categoria" => "Categoria"]]);
 
 
@@ -35,7 +35,7 @@ class ProdutoControllerTest extends TestCase
 
     public function testObterProdutosPorCategoriaSemProdutosEncontrados()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $mockService->method('getProdutosPorCategoria')->willReturn([]);
 
         $controller = new ProdutoController($mockService);
@@ -50,7 +50,7 @@ class ProdutoControllerTest extends TestCase
 
     public function testCadastrarProdutoComCamposObrigatoriosVazios()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $controller = new ProdutoController($mockService);
 
         $dados = [
@@ -66,7 +66,7 @@ class ProdutoControllerTest extends TestCase
 
     public function testCadastrarProdutoJaExistente()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $mockService->method('getProdutoPorNome')->willReturn(['nome' => 'Produto Existente', 'descricao' => 'Descrição', 'preco' => 10.0, 'categoria' => 'Categoria']);
 
         $controller = new ProdutoController($mockService);
@@ -84,7 +84,7 @@ class ProdutoControllerTest extends TestCase
 
     public function testCadastrarProdutoComSucesso()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $mockService->method('getProdutoPorNome')->willReturn([]);
         $mockService->method('setNovoProduto')->willReturn(true);
 
@@ -103,7 +103,7 @@ class ProdutoControllerTest extends TestCase
 
     public function testCadastrarProdutoComErro()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $mockService->method('getProdutoPorNome')->willReturn([]);
         $mockService->method('setNovoProduto')->willReturn(false);
 
@@ -124,7 +124,7 @@ class ProdutoControllerTest extends TestCase
     // Editar
     public function testEditarProdutoComCamposObrigatoriosVazios()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $controller = new ProdutoController($mockService);
 
         $dados = [
@@ -141,7 +141,7 @@ class ProdutoControllerTest extends TestCase
 
     public function testEditarProdutoNaoEncontrado()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $mockService->method('getProdutoPorId')->willReturn([]);
 
         $controller = new ProdutoController($mockService);
@@ -160,7 +160,7 @@ class ProdutoControllerTest extends TestCase
 
     public function testEditarProdutoComSucesso()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $mockService->method('getProdutoPorId')->willReturn(['nome' => 'Produto Editado', 'descricao' => 'Descrição Editada', 'preco' => 30.0, 'categoria' => 'Categoria Editada']);
         $mockService->method('setProduto')->willReturn(true);
 
@@ -180,7 +180,7 @@ class ProdutoControllerTest extends TestCase
 
     public function testEditarProdutoComErro()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $mockService->method('getProdutoPorId')->willReturn(['nome' => 'Produto Editado', 'descricao' => 'Descrição Editada', 'preco' => 30.0, 'categoria' => 'Categoria Editada']);
         $mockService->method('setProduto')->willReturn(false);
 
@@ -202,7 +202,7 @@ class ProdutoControllerTest extends TestCase
     // Excluir
     public function testExcluirProdutoComIdVazio()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $mockService->method('getProdutoPorId')->willReturn([]);
         $mockService->method('setExcluirProdutoPorId')->willReturn(false);
 
@@ -216,7 +216,7 @@ class ProdutoControllerTest extends TestCase
 
     public function testExcluirProdutoNaoEncontrado()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $mockService->method('getProdutoPorId')->willReturn([]);
 
         $controller = new ProdutoController($mockService);
@@ -229,7 +229,7 @@ class ProdutoControllerTest extends TestCase
 
     public function testExcluirProdutoComSucesso()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $mockService->method('getProdutoPorId')->willReturn(["nome" => "Produto Existente", "descricao" => "Descrição", "preco" => 10.0, "categoria" => "Categoria"]);
         $mockService->method('setExcluirProdutoPorId')->willReturn(true);
 
@@ -243,7 +243,7 @@ class ProdutoControllerTest extends TestCase
 
     public function testExcluirProdutoComErro()
     {
-        $mockService = $this->createMock(ProdutoServiceInterface::class);
+        $mockService = $this->createMock(ProdutoGatewayInterface::class);
         $mockService->method('getProdutoPorId')->willReturn(["nome" => "Produto Existente", "descricao" => "Descrição", "preco" => 10.0, "categoria" => "Categoria"]);
         $mockService->method('setExcluirProdutoPorId')->willReturn(false);
 
