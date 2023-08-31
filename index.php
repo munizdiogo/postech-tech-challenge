@@ -1,23 +1,29 @@
 <?php
+
 use external\MySqlConnection;
+
 header('Content-Type: application/json; charset=utf-8');
 require_once 'vendor/autoload.php';
 
 (new controllers\DotEnvEnvironment)->load();
+
 use controllers\AutenticacaoController;
 use controllers\ClienteController;
-use controllers\PedidoController;
 use controllers\ProdutoController;
-use interfaces\DbConnection;
+use controllers\PedidoController;
 use gateways\ClienteGateway;
-use gateways\Database;
+use gateways\ProdutoGateway;
+use gateways\PedidoGateway;
 use Firebase\JWT\Key as Key;
 
 $dbConnection = new MySqlConnection();
 $clienteGateway = new ClienteGateway($dbConnection);
 $clienteController = new ClienteController();
-// $produtoService = new ProdutoService();
-// $produtoController = new ProdutoController($produtoService);
+$produtoGateway = new ProdutoGateway($dbConnection);
+$produtoController = new ProdutoController();
+$pedidoGateway = new PedidoGateway($dbConnection);
+$pedidoController = new PedidoController();
+
 // $pedidoService = new PedidoService();
 // $pedidoController = new PedidoController($pedidoService, $ClienteGateway);
 
@@ -42,9 +48,7 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'gerarToken') {
         if (!empty($_GET["acao"])) {
             switch ($_GET["acao"]) {
                 case "cadastrarCliente":
-                    $salvarDados = $clienteController->cadastrarCliente($dbConnection, $_POST);
-                    var_dump($salvarDados);
-                    exit;
+                    $salvarDados = $clienteController->cadastrar($dbConnection, $_POST);
                     if ($salvarDados) {
                         retornarRespostaJSON("Cliente criado com sucesso.", 201);
                     } else {
@@ -52,35 +56,64 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'gerarToken') {
                     }
                     break;
 
-                // case "getClientePorCPF":
-                //     $clienteController->buscarClientePorCPF($_GET["cpf"]);
-                //     break;
+                case "obterClientePorCPF":
+                    $dadosCliente = $clienteController->buscarPorCPF($dbConnection, $_GET["cpf"]);
+                    $resposta = !empty($dadosCliente) ? $dadosCliente : "Nenhum cliente encontrado com o CPF informado.";
+                    retornarRespostaJSON($resposta, 200);
+                    break;
 
-                // case "cadastrarProduto":
-                //     $produtoController->cadastrar($_POST);
-                //     break;
+                case "cadastrarProduto":
+                    $salvarDados = $produtoController->cadastrar($dbConnection, $_POST);
+                    if ($salvarDados) {
+                        retornarRespostaJSON("Produto cadastrado com sucesso.", 201);
+                    } else {
+                        retornarRespostaJSON("Ocorreu um erro ao salvar os dados do produto.", 500);
+                    }
+                    break;
 
-                // case "editarProduto":
-                //     $produtoController->editar($_POST);
-                //     break;
+                case "editarProduto":
+                    $atualizarDados = $produtoController->atualizar($dbConnection, $_POST);
+                    if ($atualizarDados) {
+                        retornarRespostaJSON("Produto atualizado com sucesso.", 200);
+                    } else {
+                        retornarRespostaJSON("Ocorreu um erro ao atualizar os dados do produto.", 500);
+                    }
+                    break;
 
-                // case "excluirProduto":
-                //     $produtoController->excluir($_POST["id"]);
-                //     break;
+                case "excluirProduto":
+                    $excluirProduto = $produtoController->excluir($dbConnection, $_POST["id"]);
+                    if ($excluirProduto) {
+                        retornarRespostaJSON("Produto excluído com sucesso.", 200);
+                    } else {
+                        retornarRespostaJSON("Ocorreu um erro ao excluir o produto.", 500);
+                    }
+                    break;
 
-                // case "obterProdutosPorCategoria":
-                //     $produtoController->obterProdutosPorCategoria($_GET["categoria"]);
-                //     break;
+                case "obterProdutosPorCategoria":
+                    $produtos = $produtoController->obterPorCategoria($dbConnection, $_GET["categoria"]);
+                    if (!empty($produtos)) {
+                        retornarRespostaJSON($produtos, 200);
+                    } else {
+                        retornarRespostaJSON("Nenhum produto encontrado nesta categoria.", 200);
+                    }
+                    break;
 
-                // case "cadastrarNovoPedido":
-                //     $jsonDados = file_get_contents("php://input");
-                //     $dados = json_decode($jsonDados, true);
-                //     $pedidoController->cadastrar($dados);
-                //     break;
+                case "cadastrarNovoPedido":
+                    $jsonDados = file_get_contents("php://input");
+                    $dados = json_decode($jsonDados, true);
 
-                // case "obterPedidos":
-                //     $pedidoController->obterPedidos();
-                //     break;
+                    $idPedido = $pedidoController->cadastrar($dbConnection, $dados);
+
+                    if ($idPedido) {
+                        retornarRespostaJSON(["id" => $idPedido, "mensagem" => "Pedido criado com sucesso."], 201);
+                    } else {
+                        retornarRespostaJSON("Ocorreu um erro ao salvar os dados do pedido.", 500);
+                    }
+                    break;
+
+                    // case "obterPedidos":
+                    //     $pedidoController->obterPedidos();
+                    //     break;
 
                 default:
                     echo '{"mensagem": "A ação informada é inválida."}';

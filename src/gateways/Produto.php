@@ -42,7 +42,7 @@ class ProdutoService implements ProdutoGatewayInterface
         }
     }
 
-    public function setProduto(Produto $produto): bool
+    public function atualizar(int $id, Produto $produto): bool
     {
         $id = $produto->getId();
         $nome = $produto->getNome();
@@ -84,7 +84,7 @@ class ProdutoService implements ProdutoGatewayInterface
         $sql = "SELECT * FROM produtos WHERE categoria = :categoria";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(":categoria", $categoria);
-        
+
         try {
             $stmt->execute();
             $resultado = $stmt->fetchAll(\PDO::FETCH_ASSOC);

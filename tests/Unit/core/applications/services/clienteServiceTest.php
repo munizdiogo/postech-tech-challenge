@@ -6,64 +6,64 @@ use core\domain\entities\Cliente;
 
 class ClienteGatewayTest extends TestCase
 {
-    public function testsetClienteComSucesso()
+    public function testcadastrarComSucesso()
     {
         $clienteDomainMock = $this->createMock(ClienteGateway::class);
 
         $clienteEntity = new Cliente('José', 'jose@teste.com', '12345678900');
 
         $clienteDomainMock->expects($this->once())
-            ->method('setCliente')
+            ->method('cadastrar')
             ->with($clienteEntity)
             ->willReturn(true);
 
 
-        $resultado = $clienteDomainMock->setCliente($clienteEntity);
+        $resultado = $clienteDomainMock->cadastrar($clienteEntity);
 
         $this->assertTrue($resultado);
     }
 
-    public function testsetClienteComErro()
+    public function testcadastrarComErro()
     {
         $clienteDomainMock = $this->createMock(ClienteGateway::class);
 
         $clienteEntity = new Cliente('José', 'jose@teste.com', '12345678900');
 
         $clienteDomainMock->expects($this->once())
-            ->method('setCliente')
+            ->method('cadastrar')
             ->with($clienteEntity)
             ->willReturn(false);
 
 
-        $resultado = $clienteDomainMock->setCliente($clienteEntity);
+        $resultado = $clienteDomainMock->cadastrar($clienteEntity);
 
         $this->assertFalse($resultado);
     }
 
-    public function testgetClientePorCPF()
+    public function testobterClientePorCPF()
     {
         $clienteDomainMock = $this->createMock(ClienteGateway::class);
 
         $clienteDomainMock->expects($this->once())
-            ->method('getClientePorCPF')
+            ->method('obterClientePorCPF')
             ->with('12345678900')
             ->willReturn(['id' => 1, 'cpf' => '12345678900', 'nome' => 'José', 'email' => 'jose@teste.com']);
 
-        $resultado = $clienteDomainMock->getClientePorCPF('12345678900');
+        $resultado = $clienteDomainMock->obterClientePorCPF('12345678900');
 
         $this->assertEquals(['id' => 1, 'cpf' => '12345678900', 'nome' => 'José', 'email' => 'jose@teste.com'], $resultado);
     }
 
-    public function testgetClientePorCPFNaoEncontrado()
+    public function testobterClientePorCPFNaoEncontrado()
     {
         $clienteDomainMock = $this->createMock(ClienteGateway::class);
 
         $clienteDomainMock->expects($this->once())
-            ->method('getClientePorCPF')
+            ->method('obterClientePorCPF')
             ->with('123456789001')
             ->willReturn([]);
 
-        $resultado = $clienteDomainMock->getClientePorCPF('123456789001');
+        $resultado = $clienteDomainMock->obterClientePorCPF('123456789001');
 
         $this->assertEquals([], $resultado);
     }

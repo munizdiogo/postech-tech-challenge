@@ -17,9 +17,10 @@ class ClienteGateway implements ClienteGatewayInterface
         $this->repositorioDados = $database;
     }
 
-    public function setCliente(Cliente $cliente): bool
+    public function cadastrar(Cliente $cliente): bool
     {
         $parametros = [
+            "data_criacao" => date('Y-m-y h:s:i'),
             "nome" => $cliente->getNome(),
             "email" => $cliente->getEmail(),
             "cpf" =>  $cliente->getCpf()
@@ -44,28 +45,16 @@ class ClienteGateway implements ClienteGatewayInterface
         // }
     }
 
-    public function getClientePorCPF(string $cpf)
+    public function obterClientePorCPF(string $cpf)
     {
+        $campos = []; // Todos os campos
         $parametros = [
-            "nome" => $cliente->getNome(),
-            "email" => $cliente->getEmail(),
-            "cpf" =>  $cliente->getCpf()
+            [
+                "campo" => "cpf",
+                "valor" => $cpf
+            ]
         ];
-
-        $resultado = $this->repositorioDados->inserir($this->nomeTabela, $parametros);
-        return $resultado;
-
-
-        // $sql = "SELECT id, cpf, nome, email FROM clientes WHERE cpf = :cpf";
-        // $stmt = $this->db->prepare($sql);
-        // $stmt->bindParam(":cpf", $cpf);
-
-        // try {
-        //     $stmt->execute();
-        //     $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        //     return !empty($result) ? $result : false;
-        // } catch (PDOException $e) {
-        //     return false;
-        // }
+        $resultado = $this->repositorioDados->buscarPorParametros($this->nomeTabela, $campos, $parametros);
+        return $resultado[0] ?? [];
     }
 }

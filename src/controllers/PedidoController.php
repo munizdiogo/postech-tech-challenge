@@ -2,92 +2,71 @@
 
 namespace controllers;
 
-use interfaces\gateways;
-use core\application\ports\PedidoGatewayInterface;
+use gateways\PedidoGateway;
 use core\domain\entities\Pedido;
-use core\domain\entities\Produto;
+use usecases\PedidoUseCases;
 
 class PedidoController
 {
-    private $pedidoService;
-    private $ClienteGateway;
-
-    public function __construct(PedidoGatewayInterface $pedidoService, ClienteGatewayInterface $ClienteGateway)
+    public function __construct()
     {
-        $this->pedidoService = $pedidoService;
-        $this->ClienteGateway = $ClienteGateway;
     }
 
-    public function cadastrar(array $dados)
+    public function cadastrar($dbConnection, array $dados)
     {
         $idCliente = $dados["idCliente"] ?? "";
+        $produtos = $dados["produtos"] ?? [];
 
-        $produtos = [];
-
-        if (count($dados["produtos"]) > 0) {
-            foreach ($dados["produtos"] as $dadosProduto) {
-                $produto = new Produto($dadosProduto["nome"], $dadosProduto["descricao"], $dadosProduto["preco"], $dadosProduto["categoria"]);
-                $produto->setId($dadosProduto["id"]);
-                array_push($produtos, $produto);
-            }
+        if (empty($idCliente)) {
+            retornarRespostaJSON("O campo 'idCliente' é obrigatório.", 400);
+            exit;
         }
 
-
-        if (empty($idCliente) || empty($produtos)) {
-            retornarRespostaJSON("Os campos 'idCliente' e 'produtos' são obrigatórios.", 400);
-            return;
+        if (empty($produtos)) {
+            retornarRespostaJSON("O campo 'produtos' é obrigatório.", 400);
+            exit;
         }
 
-        $clienteValido = $this->ClienteGateway->getClientePorId($idCliente);
+        $pedidoGateway = new PedidoGateway($dbConnection);
+        $pedidoUseCases = new PedidoUseCases();
 
+        $pedido = new Pedido("recebido", $idCliente, $produtos);
 
-        if ($clienteValido) {
-
-            $pedido = new Pedido('recebido', $idCliente, $produtos);
-
-            $idPedido = $this->pedidoService->setNovoPedido($pedido);
-
-            if ($idPedido) {
-                retornarRespostaJSON(["id" => $idPedido, "mensagem" => "Pedido criado com sucesso."], 201);
-            } else {
-                retornarRespostaJSON("Ocorreu um erro ao salvar os dados do pedido.", 500);
-            }
-        } else {
-            retornarRespostaJSON("O ID do cliente informado é inválido.", 400);
-        }
+        $salvarDados = $pedidoUseCases->cadastrar($pedidoGateway, $pedido);
+        return $salvarDados;
     }
 
     public function obterPedidos()
     {
-        $pedidosFormatados = [];
-        $pedidos = $this->pedidoService->getPedidos();
+        // $pedidosFormatados = [];
+        // $pedidos = $this->pedidoService->getPedidos();
 
-        if (!empty($pedidos)) {
-            foreach ($pedidos as $chave => $valor) {
-                $pedidosFormatados[] = [
-                    "idPedido" => $valor["id"],
-                    "status" => $valor["status"],
-                    "qtdProdutos" => 0,
-                    "precoTotal" => 0,
-                    "produtos" => []
-                ];
-                $produtos = $this->pedidoService->getProdutosPorIdPedido($valor["id"]);
-                $chavePedidoFormatado = array_search($valor["id"], array_column($pedidosFormatados, "idPedido"));
-                foreach ($produtos as $produto) {
-                    $pedidosFormatados[$chavePedidoFormatado]["produtos"][] = [
-                        "id" => $produto["id"],
-                        "nome" => $produto["nome"],
-                        "descricao" => $produto["descricao"],
-                        "preco" =>  number_format((float)$produto["preco"], 2, '.', ''),
-                        "categoria" => $produto["categoria"],
-                    ];
-                    $pedidosFormatados[$chavePedidoFormatado]["precoTotal"] = number_format((float)($pedidosFormatados[$chavePedidoFormatado]["precoTotal"] +  $produto["preco"]), 2, '.', '');
-                    $pedidosFormatados[$chavePedidoFormatado]["qtdProdutos"]++;
-                }
-            }
-            retornarRespostaJSON($pedidosFormatados, 200);
-        } else {
-            retornarRespostaJSON("Nenhum pedido encontrado.", 200);
-        }
+        // if (!empty($pedidos)) {
+        //     foreach ($pedidos as $chave => $valor) {
+        //         $pedidosFormatados[] = [
+        //             "idPedido" => $valor["id"],
+        //             "status" => $valor["status"],
+        //             "qtdProdutos" => 0,
+        //             "precoTotal" => 0,
+        //             "produtos" => []
+        //         ];
+        //         $produtos = $this->pedidoService->getProdutosPorIdPedido($valor["id"]);
+        //         $chavePedidoFormatado = array_search($valor["id"], array_column($pedidosFormatados, "idPedido"));
+        //         foreach ($produtos as $produto) {
+        //             $pedidosFormatados[$chavePedidoFormatado]["produtos"][] = [
+        //                 "id" => $produto["id"],
+        //                 "nome" => $produto["nome"],
+        //                 "descricao" => $produto["descricao"],
+        //                 "preco" =>  number_format((float)$produto["preco"], 2, '.', ''),
+        //                 "categoria" => $produto["categoria"],
+        //             ];
+        //             $pedidosFormatados[$chavePedidoFormatado]["precoTotal"] = number_format((float)($pedidosFormatados[$chavePedidoFormatado]["precoTotal"] +  $produto["preco"]), 2, '.', '');
+        //             $pedidosFormatados[$chavePedidoFormatado]["qtdProdutos"]++;
+        //         }
+        //     }
+        //     retornarRespostaJSON($pedidosFormatados, 200);
+        // } else {
+        //     retornarRespostaJSON("Nenhum pedido encontrado.", 200);
+        // }
     }
 }

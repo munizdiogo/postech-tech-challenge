@@ -7,17 +7,23 @@ use gateways\ClienteGateway;
 
 class ClienteUseCases
 {
-    public function cadastrarCliente(ClienteGateway $clienteGateway, Cliente $cliente)
+    public function cadastrar(ClienteGateway $clienteGateway, Cliente $cliente)
     {
         $cpf = $cliente->getCpf();
-        $clienteJaCadastrado = $clienteGateway->getClientePorCPF($cpf);
+        $clienteJaCadastrado = $clienteGateway->obterClientePorCPF($cpf);
 
         if ($clienteJaCadastrado) {
             retornarRespostaJSON("Já existe um cliente cadastrado com este CPF.", 409);
-            return;
+            exit;
         }
 
-        $resultadoCadastro = $clienteGateway->setCliente($cliente);
+        $resultadoCadastro = $clienteGateway->cadastrar($cliente);
         return $resultadoCadastro;
+    }
+
+    public function obterClientePorCPF(ClienteGateway $clienteGateway, string $cpf)
+    {
+        $dados = $clienteGateway->obterClientePorCPF($cpf);
+        return $dados;
     }
 }

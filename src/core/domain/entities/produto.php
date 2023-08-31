@@ -9,7 +9,6 @@ class Produto
     private string $descricao;
     private string $preco;
     private string $categoria;
-    private string $dataCriacao;
 
     public function __construct($nome, $descricao, $preco, $categoria)
     {
@@ -17,7 +16,6 @@ class Produto
         $this->descricao = $descricao;
         $this->preco = $preco;
         $this->categoria = $categoria;
-        $this->dataCriacao = date('Y-m-y h:s:i');
     }
 
     public function getId(): string
@@ -53,9 +51,4 @@ class Produto
         return $this->categoria;
     }
 
-
-    public function getDataCriacao(): string
-    {
-        return $this->dataCriacao;
-    }
 }

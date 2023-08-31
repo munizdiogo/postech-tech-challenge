@@ -15,29 +15,25 @@ class ClienteController
     {
     }
 
-    public function cadastrarCliente($dbConnection, array $dados)
+    public function cadastrar($dbConnection, array $dados)
     {
         $campos = ["nome", "email", "cpf"];
 
         foreach ($campos as $campo) {
             if (empty($dados["$campo"])) {
                 retornarRespostaJSON("O campo '$campo' é obrigatório.", 400);
-                return;
+                exit;
             }
         }
 
         $cliente = new Cliente($dados['nome'], $dados['email'], $dados['cpf']);
         $clienteGateway = new ClienteGateway($dbConnection);
         $clienteUseCases = new ClienteUseCases();
-
-        $salvarDados = $clienteUseCases->cadastrarCliente($clienteGateway, $cliente);
-
-
-
+        $salvarDados = $clienteUseCases->cadastrar($clienteGateway, $cliente);
         return $salvarDados;
     }
 
-    public function buscarClientePorCPF(string $cpf): void
+    public function buscarPorCPF($dbConnection, string $cpf)
     {
         if (empty($cpf)) {
             retornarRespostaJSON("O campo CPF é obrigatório.", 400);
@@ -45,11 +41,9 @@ class ClienteController
         }
 
         $cpf = str_replace([".", "-"], "", $cpf);
-
-        $dadosCliente = $this->ClienteGateway->getClientePorCPF($cpf);
-
-        $resposta = !empty($dadosCliente) ? $dadosCliente : "Nenhum cliente encontrado com o CPF informado.";
-
-        retornarRespostaJSON($resposta, 200);
+        $clienteGateway = new ClienteGateway($dbConnection);
+        $clienteUseCases = new ClienteUseCases();
+        $dados = $clienteUseCases->obterClientePorCPF($clienteGateway, $cpf);
+        return $dados;
     }
 }
