@@ -9,6 +9,7 @@ class Cliente
     private String $email;
     private String $cpf;
     private String $dataCriacao;
+    private String $dataCriacao;
 
     public function __construct(string $nome, string $email, string $cpf)
     {
