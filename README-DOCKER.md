@@ -4,43 +4,34 @@
 Esta documentação tem o intuito de orientar sobre a configuração e utilização correta do sistema de lanchonete.
 
 
-## CRIAR CONTAINERS, POD, SERVICE, DEPLOY
+## Configuração de Imagem e Containers Docker
 
-kubectl apply -f mysql-pv.yaml
-kubectl apply -f mysql-service.yaml
-kubectl apply -f mysql-deploy.yaml
-kubectl apply -f php-service.yaml
-kubectl apply -f php-deploy.yaml
+Abra o terminal dentro da pasta raiz do projeto e execute o seguinte comando: 
 
-
-## Verificar se ambiente foi criado
-
-kubectl cluster-info
-kubectl get po
-kubectl get svc
-
+```bash
+  docker-compose up -d
+```
+E aguarde a finalização da execução. 
 
 
 ## Variáveis de Ambiente
 
-Para execução correta desse projeto e a conexão com o banco de dados, abra o Terminal dentro do container k8s_webserver_aplicacaoweb, execute o comando abaixo para ir para o diretório correto: 
+Para execução correta desse projeto e a conexão com o banco de dados, abra o Terminal dentro do container SERVIDOR-WEB, execute o comando abaixo para ir para o diretório correto: 
 
 ```bash
   cd /var/www/html
 ```
 
-Em seguida verifique se já existe o arquivo com o nome ".env", caso não exista deverá ser criado com o conteúdo abaixo: 
+Em seguida crie um arquivo com o nome ".env", com o conteúdo abaixo: 
 
 ```bash
-  DB_HOST=mysql
+  DB_HOST=SERVIDOR-DB
   DB_NAME=dbpostech
   DB_USERNAME=root
   DB_PASSWORD=secret
   DB_PORT=3306
   CHAVE_SECRETA=SUA_CHAVE_SECRETA
 ```
-
-
 
 
 ## Testes Unitários
@@ -56,7 +47,6 @@ Em seguida execute o seguinte comando:
 ```bash
   ./vendor/bin/phpunit --testdox tests --colors
 ```
-
 
 
 ## Documentação

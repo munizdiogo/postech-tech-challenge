@@ -6,9 +6,6 @@
 /logs/
 /tmp/
 *.log
-.env
-/.env.*
-*.env.local
 /data/
 /generated/
 /target/
