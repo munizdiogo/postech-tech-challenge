@@ -1,72 +1,60 @@
 <?php
 
-namespace controllers;
+namespace Controllers;
 
-use gateways\PedidoGateway;
-use core\domain\entities\Pedido;
-use usecases\PedidoUseCases;
+use Gateways\PedidoGateway;
+use Entities\Pedido;
+use Interfaces\Controllers\PedidoControllerInterface;
+use UseCases\PedidoUseCases;
 
-class PedidoController
+class PedidoController implements PedidoControllerInterface
 {
-    public function __construct()
-    {
-    }
-
     public function cadastrar($dbConnection, array $dados)
     {
+        $dados = $dados ?? [];
         $idCliente = $dados["idCliente"] ?? "";
         $produtos = $dados["produtos"] ?? [];
-
-        if (empty($idCliente)) {
-            retornarRespostaJSON("O campo 'idCliente' é obrigatório.", 400);
-            exit;
-        }
-
-        if (empty($produtos)) {
-            retornarRespostaJSON("O campo 'produtos' é obrigatório.", 400);
-            exit;
-        }
-
         $pedidoGateway = new PedidoGateway($dbConnection);
         $pedidoUseCases = new PedidoUseCases();
-
         $pedido = new Pedido("recebido", $idCliente, $produtos);
-
-        $salvarDados = $pedidoUseCases->cadastrar($pedidoGateway, $pedido);
-        return $salvarDados;
+        $idPedido = $pedidoUseCases->cadastrar($pedidoGateway, $pedido);
+        return $idPedido;
     }
 
-    public function obterPedidos()
+    public function obterPedidos($dbConnection)
     {
-        // $pedidosFormatados = [];
-        // $pedidos = $this->pedidoService->getPedidos();
+        $pedidoGateway = new PedidoGateway($dbConnection);
+        $pedidoUseCases = new PedidoUseCases();
+        $pedidos = $pedidoUseCases->obterPedidos($pedidoGateway);
+        return $pedidos;
+    }
 
-        // if (!empty($pedidos)) {
-        //     foreach ($pedidos as $chave => $valor) {
-        //         $pedidosFormatados[] = [
-        //             "idPedido" => $valor["id"],
-        //             "status" => $valor["status"],
-        //             "qtdProdutos" => 0,
-        //             "precoTotal" => 0,
-        //             "produtos" => []
-        //         ];
-        //         $produtos = $this->pedidoService->getProdutosPorIdPedido($valor["id"]);
-        //         $chavePedidoFormatado = array_search($valor["id"], array_column($pedidosFormatados, "idPedido"));
-        //         foreach ($produtos as $produto) {
-        //             $pedidosFormatados[$chavePedidoFormatado]["produtos"][] = [
-        //                 "id" => $produto["id"],
-        //                 "nome" => $produto["nome"],
-        //                 "descricao" => $produto["descricao"],
-        //                 "preco" =>  number_format((float)$produto["preco"], 2, '.', ''),
-        //                 "categoria" => $produto["categoria"],
-        //             ];
-        //             $pedidosFormatados[$chavePedidoFormatado]["precoTotal"] = number_format((float)($pedidosFormatados[$chavePedidoFormatado]["precoTotal"] +  $produto["preco"]), 2, '.', '');
-        //             $pedidosFormatados[$chavePedidoFormatado]["qtdProdutos"]++;
-        //         }
-        //     }
-        //     retornarRespostaJSON($pedidosFormatados, 200);
-        // } else {
-        //     retornarRespostaJSON("Nenhum pedido encontrado.", 200);
-        // }
+    public function obterPorId($dbConnection, $id)
+    {
+        $pedidoGateway = new PedidoGateway($dbConnection);
+        $pedidoUseCases = new PedidoUseCases();
+        $pedido = $pedidoUseCases->obterPorId($pedidoGateway, $id);
+        return $pedido;
+    }
+    public function obterStatusPagamentoPedido($dbConnection, $id)
+    {
+        $pedidoGateway = new PedidoGateway($dbConnection);
+        $pedidoUseCases = new PedidoUseCases();
+        $pedidos = $pedidoUseCases->obterStatusPagamentoPedido($pedidoGateway, $id);
+        return $pedidos;
+    }
+    public function atualizarStatusPedido($dbConnection, $id, $status)
+    {
+        $pedidoGateway = new PedidoGateway($dbConnection);
+        $pedidoUseCases = new PedidoUseCases();
+        $resultado = $pedidoUseCases->atualizarStatusPedido($pedidoGateway, $id, $status);
+        return $resultado;
+    }
+    public function atualizarStatusPagamentoPedido($dbConnection, $id, $status)
+    {
+        $pedidoGateway = new PedidoGateway($dbConnection);
+        $pedidoUseCases = new PedidoUseCases();
+        $resultado = $pedidoUseCases->atualizarStatusPagamentoPedido($pedidoGateway, $id, $status);
+        return $resultado;
     }
 }

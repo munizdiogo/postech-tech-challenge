@@ -1,10 +1,10 @@
 <?php
 
-namespace gateways;
+namespace Gateways;
 
-use core\domain\entities\Produto;
-use interfaces\DbConnection;
-use interfaces\ProdutoGatewayInterface;
+use Interfaces\dbconnection\DbConnectionInterface;
+use Entities\Produto;
+use Interfaces\Gateways\ProdutoGatewayInterface;
 use PDOException;
 
 class ProdutoGateway implements ProdutoGatewayInterface
@@ -12,7 +12,7 @@ class ProdutoGateway implements ProdutoGatewayInterface
     private $repositorioDados;
     private $nomeTabela = "produtos";
 
-    public function __construct(DbConnection $database)
+    public function __construct(DbConnectionInterface $database)
     {
         $this->repositorioDados = $database;
     }
@@ -34,7 +34,6 @@ class ProdutoGateway implements ProdutoGatewayInterface
     public function atualizar(int $id, Produto $produto): bool
     {
         $parametros = [
-            "id" => $id,
             "data_alteracao" => date('Y-m-y h:s:i'),
             "nome" => $produto->getNome(),
             "descricao" => $produto->getDescricao(),
@@ -42,7 +41,7 @@ class ProdutoGateway implements ProdutoGatewayInterface
             "categoria" => $produto->getCategoria()
         ];
 
-        $resultado = $this->repositorioDados->atualizar($this->nomeTabela, $parametros);
+        $resultado = $this->repositorioDados->atualizar($this->nomeTabela, $id, $parametros);
         return $resultado;
     }
 
@@ -54,7 +53,7 @@ class ProdutoGateway implements ProdutoGatewayInterface
 
     public function obterPorNome(string $nome): array
     {
-        $campos = []; // Todos os campos
+        $campos = []; 
         $parametros = [
             [
                 "campo" => "nome",
@@ -67,7 +66,7 @@ class ProdutoGateway implements ProdutoGatewayInterface
 
     public function obterPorId(string $id): array
     {
-        $campos = []; // Todos os campos
+        $campos = []; 
         $parametros = [
             [
                 "campo" => "id",
@@ -80,7 +79,7 @@ class ProdutoGateway implements ProdutoGatewayInterface
 
     public function obterPorCategoria(string $categoria): array
     {
-        $campos = []; // Todos os campos
+        $campos = []; 
         $parametros = [
             [
                 "campo" => "categoria",

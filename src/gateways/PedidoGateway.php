@@ -1,18 +1,19 @@
 <?php
 
-namespace gateways;
+namespace Gateways;
 
-use interfaces\PedidoGatewayInterface;
-use interfaces\DbConnection;
-use core\domain\entities\Pedido;
+use Interfaces\dbconnection\DbConnectionInterface;
+use Interfaces\Gateways\PedidoGatewayInterface;
+use Entities\Pedido;
 use PDOException;
 
 class PedidoGateway implements PedidoGatewayInterface
 {
     private $repositorioDados;
-    private $nomeTabela = "pedidos";
+    private $nomeTabelaPedidos = "pedidos";
+    private $nomeTabelaPedidosProdutos = "pedidos_produtos";
 
-    public function __construct(DbConnection $database)
+    public function __construct(DbConnectionInterface $database)
     {
         $this->repositorioDados = $database;
     }
@@ -21,62 +22,124 @@ class PedidoGateway implements PedidoGatewayInterface
     {
         $parametros = [
             "data_criacao" => date('Y-m-y h:s:i'),
-            "status" => 'recebido',
+            "status" => $pedido->getStatus(),
             "cliente_id" => $pedido->getIdCliente(),
+            "pagamento_status" => "pendente",
         ];
 
-        $salvarDadosPedido = $this->repositorioDados->inserir($this->nomeTabela, $parametros);
+        $idPedido = $this->repositorioDados->inserir($this->nomeTabelaPedidos, $parametros);
 
-        $idPedido =  $this->repositorioDados->obterUltimoId();
-
-        $sql = "";
-
-        if (!empty($produtos)) {
-            $sql .= "INSERT INTO pedidos_produtos (data_criacao, pedido_id, produto_id, produto_nome, produto_descricao, produto_preco, produto_categoria) VALUES ";
+        if (empty($idPedido)) {
+            return false;
         }
 
-        foreach ($produtos as $chave => $produto) {
-            $sql .= "(NOW(), $idPedido, '{$produto->getId()}', '{$produto->getNome()}', '{$produto->getDescricao()}', '{$produto->getPreco()}', '{$produto->getCategoria()}'),";
+        $produtos = $pedido->getProdutos();
 
-            if ($chave == count($produtos) - 1) {
-                $sql = substr($sql, 0, -1);
+        foreach ($produtos as $produto) {
+            $parametros = [
+                "data_criacao" => date('Y-m-y h:s:i'),
+                "pedido_id" => $idPedido,
+                "produto_id" => $produto["id"],
+                "produto_nome" => $produto["nome"],
+                "produto_descricao" => $produto["descricao"],
+                "produto_preco" => $produto["preco"],
+                "produto_categoria" => $produto["categoria"]
+            ];
+
+            $cadastrarProdutoPedido = $this->repositorioDados->inserir($this->nomeTabelaPedidosProdutos, $parametros);
+            if (!$cadastrarProdutoPedido) {
+                retornarRespostaJSON("Ocorreu um erro ao salvar um item do pedido.", 500);
+                die();
             }
         }
+        return !empty($idPedido) ? (int)$idPedido : false;
+    }
 
-        $this->db->exec($sql);
-        return $idPedido;
+    public function obterPedidos(): array
+    {
+        $pedidosFormatados = [];
+        $pedidos = $this->repositorioDados->buscarTodosPedidos($this->nomeTabelaPedidos);
 
-        $resultado = $this->repositorioDados->inserir($this->nomeTabela, $parametros);
+        if (!empty($pedidos)) {
+            foreach ($pedidos as $chave => $valor) {
+
+                $pedidosFormatados[] = [
+                    "idPedido" => (int)$valor["id"],
+                    "dataCriacao" => $valor["data_criacao"],
+                    "dataAlteracao" => $valor["data_alteracao"],
+                    "status" => $valor["status"],
+                    "statusPagamento" => $valor["pagamento_status"],
+                    "qtdProdutos" => 0,
+                    "precoTotal" => 0,
+                    "produtos" => []
+                ];
+                $campos = [];
+                $parametros = [
+                    [
+                        "campo" => "pedido_id",
+                        "valor" => $valor["id"]
+                    ]
+                ];
+
+                $produtos = $this->repositorioDados->buscarPorParametros($this->nomeTabelaPedidosProdutos, $campos, $parametros);
+                $chavePedidoFormatado = array_search($valor["id"], array_column($pedidosFormatados, "idPedido"));
+
+                foreach ($produtos as $produto) {
+                    $pedidosFormatados[$chavePedidoFormatado]["produtos"][] = [
+                        "id" => (int)$produto["produto_id"],
+                        "nome" => $produto["produto_nome"],
+                        "descricao" => $produto["produto_descricao"],
+                        "preco" =>  number_format((float)$produto["produto_preco"], 2, '.', ''),
+                        "categoria" => $produto["produto_categoria"],
+                    ];
+                    $pedidosFormatados[$chavePedidoFormatado]["precoTotal"] = number_format((float)($pedidosFormatados[$chavePedidoFormatado]["precoTotal"] +  $produto["produto_preco"]), 2, '.', '');
+                    $pedidosFormatados[$chavePedidoFormatado]["qtdProdutos"]++;
+                }
+            }
+        }
+        return $pedidosFormatados;
+    }
+
+    public function atualizarStatusPedido($id, $status): bool
+    {
+        $parametros = [
+            "data_alteracao" => date('Y-m-y h:s:i'),
+            "status" => $status
+        ];
+        $resultado = $this->repositorioDados->atualizar($this->nomeTabelaPedidos, $id, $parametros);
         return $resultado;
     }
-
-
-    public function getPedidos(): array
+    public function atualizarStatusPagamentoPedido($id, $status): bool
     {
-        $sql = "SELECT * FROM pedidos";
-        try {
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute();
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            return [];
-        }
+        $parametros = [
+            "data_alteracao" => date('Y-m-y h:s:i'),
+            "pagamento_status" => $status
+        ];
+        $resultado = $this->repositorioDados->atualizar($this->nomeTabelaPedidos, $id, $parametros);
+        return $resultado;
     }
-
-
-    public function getProdutosPorIdPedido(int $idPedido): array
+    public function obterStatusPagamentoPedido($id): array
     {
-        $sql = "SELECT produto_id AS 'id', produto_nome AS 'nome', produto_descricao AS 'descricao', produto_preco AS 'preco', produto_categoria AS 'categoria'
-                FROM pedidos_produtos
-                WHERE pedido_id = :idPedido";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(":idPedido", $idPedido);
-        try {
-            $stmt->execute();
-            $resultado = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            return $resultado ? $resultado : [];
-        } catch (PDOException $e) {
-            return [];
-        }
+        $campos = ["id", "pagamento_status"];
+        $parametros = [
+            [
+                "campo" => "id",
+                "valor" => $id
+            ]
+        ];
+        $resultado = $this->repositorioDados->buscarPorParametros($this->nomeTabelaPedidos, $campos, $parametros);
+        return $resultado;
+    }
+    public function obterPorId($id): array
+    {
+        $campos = [];
+        $parametros = [
+            [
+                "campo" => "id",
+                "valor" => $id
+            ]
+        ];
+        $resultado = $this->repositorioDados->buscarPorParametros($this->nomeTabelaPedidos, $campos, $parametros);
+        return $resultado;
     }
 }

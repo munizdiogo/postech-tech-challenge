@@ -1,10 +1,10 @@
 <?php
 
-namespace gateways;
+namespace Gateways;
 
-use core\domain\entities\Cliente;
-use interfaces\DbConnection;
-use interfaces\ClienteGatewayInterface;
+use Interfaces\dbconnection\DbConnectionInterface;
+use Interfaces\Gateways\ClienteGatewayInterface;
+use Entities\Cliente;
 use PDOException;
 
 class ClienteGateway implements ClienteGatewayInterface
@@ -12,7 +12,7 @@ class ClienteGateway implements ClienteGatewayInterface
     private $repositorioDados;
     private $nomeTabela = "clientes";
 
-    public function __construct(DbConnection $database)
+    public function __construct(DbConnectionInterface $database)
     {
         $this->repositorioDados = $database;
     }
@@ -30,24 +30,9 @@ class ClienteGateway implements ClienteGatewayInterface
         return $resultado;
     }
 
-    public function getClientePorId(int $id)
+    public function obterClientePorCPF(string $cpf): array
     {
-        // $sql = "SELECT id FROM clientes WHERE id = :id";
-        // $stmt = $this->db->prepare($sql);
-        // $stmt->bindParam(":id", $id);
-
-        // try {
-        //     $stmt->execute();
-        //     $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        //     return !empty($result);
-        // } catch (PDOException $e) {
-        //     return false;
-        // }
-    }
-
-    public function obterClientePorCPF(string $cpf)
-    {
-        $campos = []; // Todos os campos
+        $campos = []; 
         $parametros = [
             [
                 "campo" => "cpf",

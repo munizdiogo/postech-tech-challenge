@@ -1,19 +1,20 @@
 <?php
 
-namespace external;
+namespace External;
 
-use interfaces\DbConnection;
+use Interfaces\dbconnection\DbConnectionInterface;
 use \PDO;
 use \PDOException;
-use \controllers\DotEnvEnvironment;
+use \Controllers\DotEnvEnvironment;
 
-class MySqlConnection implements DbConnection
+class MySqlConnection implements DbConnectionInterface
 {
-    public function getConexao()
+    public function conectar()
     {
         $dotEnv = new DotEnvEnvironment();
         $dotEnv->load();
         $conn = null;
+
         try {
             $conn = new PDO("mysql:host=" . $_ENV['DB_HOST'] . ";port=" . $_ENV['DB_PORT'] . ";dbname=" . $_ENV['DB_NAME'], $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD']);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -24,9 +25,9 @@ class MySqlConnection implements DbConnection
         return $conn;
     }
 
-    public function inserir(string $nomeTabela, array $parametros): bool
+    public function inserir(string $nomeTabela, array $parametros)
     {
-        $db = $this->getConexao();
+        $db = $this->conectar();
         $nomesCampos = implode(", ", array_keys($parametros));
         $nomesValores = ":" . implode(", :", array_keys($parametros));
         $query = "INSERT INTO $nomeTabela ($nomesCampos) VALUES ($nomesValores)";
@@ -37,7 +38,7 @@ class MySqlConnection implements DbConnection
         }
 
         try {
-            return $stmt->execute();
+            return  $stmt->execute() ? $db->lastInsertId() : false;
         } catch (PDOException $e) {
             return false;
         }
@@ -45,7 +46,7 @@ class MySqlConnection implements DbConnection
 
     public function excluir(string $nomeTabela, int $id): bool
     {
-        $db = $this->getConexao();
+        $db = $this->conectar();
         $query = "DELETE FROM $nomeTabela WHERE id = :id";
         $stmt = $db->prepare($query);
         $stmt->bindValue(":id", $id);
@@ -56,9 +57,9 @@ class MySqlConnection implements DbConnection
         }
     }
 
-    public function atualizar(string $nomeTabela, array $parametros): bool
+    public function atualizar(string $nomeTabela, int $id, array $parametros): bool
     {
-        $db = $this->getConexao();
+        $db = $this->conectar();
         $nomesCampos = "";
 
         foreach ($parametros as $chave => $valor) {
@@ -66,26 +67,21 @@ class MySqlConnection implements DbConnection
         }
 
         $nomesCampos = substr($nomesCampos, 0, -2);
-
         $query = "UPDATE $nomeTabela SET $nomesCampos WHERE id = :id";
-
         $stmt = $db->prepare($query);
 
         foreach ($parametros as $chave => $valor) {
             $stmt->bindValue(":$chave", $valor);
         }
 
+        $stmt->bindValue(":id", $id);
+        
         try {
-            return $stmt->execute();
+            $stmt->execute();
+            return $stmt->rowCount();
         } catch (PDOException $e) {
             return false;
         }
-    }
-
-    public function obterUltimoId(): int
-    {
-        $db = $this->getConexao();
-        return $db->lastInsertId();
     }
 
     public function buscarPorParametros(string $nomeTabela, array $campos, array $parametros): array
@@ -93,7 +89,7 @@ class MySqlConnection implements DbConnection
         $camposBusca = $this->ajustarCamposExpressao($campos);
         $parametrosBusca = $this->prepararParametrosBusca($parametros);
 
-        $db = $this->getConexao();
+        $db = $this->conectar();
 
         if (!empty($parametrosBusca["restricao"])) {
             $query = "SELECT $camposBusca FROM $nomeTabela " . $parametrosBusca["restricao"];
@@ -107,6 +103,25 @@ class MySqlConnection implements DbConnection
             $stmt = $db->prepare($query);
         }
 
+        $stmt->execute();
+        $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $dados ?? [];
+    }
+
+    public function buscarTodosPedidos(string $nomeTabela): array
+    {
+        $db = $this->conectar();
+        $query = "SELECT *
+                  FROM $nomeTabela
+                  WHERE status <> 'finalizado'
+                  ORDER BY
+                  CASE
+                      WHEN status = 'pronto' THEN 1
+                      WHEN status = 'em_preparacao' THEN 2
+                      WHEN status = 'recebido' THEN 3
+                      ELSE 4
+                  END ASC, data_criacao";
+        $stmt = $db->prepare($query);
         $stmt->execute();
         $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $dados ?? [];

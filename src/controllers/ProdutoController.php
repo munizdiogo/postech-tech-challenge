@@ -1,29 +1,21 @@
 <?php
 
-namespace controllers;
+namespace Controllers;
 
-use gateways\ProdutoGateway;
-use core\domain\entities\Produto;
-use usecases\ProdutoUseCases;
+use Gateways\ProdutoGateway;
+use Entities\Produto;
+use Interfaces\Controllers\ProdutoControllerInterface;
+use UseCases\ProdutoUseCases;
 
-class ProdutoController
+class ProdutoController implements ProdutoControllerInterface
 {
-    public function __construct()
-    {
-    }
-
     public function cadastrar($dbConnection, array $dados)
     {
-        $campos = ["nome", "descricao", "preco", "categoria"];
-
-        foreach ($campos as $campo) {
-            if (empty($dados[$campo])) {
-                retornarRespostaJSON("O campo '$campo' é obrigatório.", 400);
-                exit;
-            }
-        }
-
-        $produto = new Produto($dados["nome"], $dados["descricao"], $dados["preco"], $dados["categoria"]);
+        $nome = $dados["nome"] ?? "";
+        $descricao = $dados["descricao"] ?? "";
+        $preco = $dados["preco"] ?? "";
+        $categoria = $dados["categoria"] ?? "";
+        $produto = new Produto($nome, $descricao, $preco, $categoria);
         $produtoGateway = new ProdutoGateway($dbConnection);
         $produtoUseCases = new ProdutoUseCases();
         $salvarDados = $produtoUseCases->cadastrar($produtoGateway, $produto);
@@ -32,35 +24,20 @@ class ProdutoController
 
     public function atualizar($dbConnection, array $dados)
     {
-        $campos = ["id", "nome", "descricao", "preco", "categoria"];
-
-        foreach ($campos as $campo) {
-            if (empty($dados[$campo])) {
-                retornarRespostaJSON("O campo '$campo' é obrigatório.", 400);
-                exit;
-            }
-        }
-
-        $produto = new Produto(
-            $dados["nome"],
-            $dados["descricao"],
-            $dados["preco"],
-            $dados["categoria"]
-        );
-
+        $nome = $dados["nome"] ?? "";
+        $descricao = $dados["descricao"] ?? "";
+        $preco = $dados["preco"] ?? "";
+        $categoria = $dados["categoria"] ?? "";
+        $id = $dados["id"] ?? 0;
+        $produto = new Produto($nome, $descricao, $preco, $categoria);
         $produtoGateway = new ProdutoGateway($dbConnection);
         $produtoUseCases = new ProdutoUseCases();
-        $atualizarDados = $produtoUseCases->atualizar($produtoGateway, $dados["id"], $produto);
+        $atualizarDados = $produtoUseCases->atualizar($produtoGateway, $id, $produto);
         return $atualizarDados;
     }
 
     public function excluir($dbConnection, int $id)
     {
-        if (empty(strval($id))) {
-            retornarRespostaJSON("O campo ID é obrigatório.", 400);
-            exit;
-        }
-
         $produtoGateway = new ProdutoGateway($dbConnection);
         $produtoUseCases = new ProdutoUseCases();
         $excluirProduto = $produtoUseCases->excluir($produtoGateway, $id);
@@ -69,11 +46,6 @@ class ProdutoController
 
     public function obterPorCategoria($dbConnection, string $nome)
     {
-        if (empty($nome)) {
-            retornarRespostaJSON("O campo nome é obrigatório.", 400);
-            exit;
-        }
-
         $produtoGateway = new ProdutoGateway($dbConnection);
         $produtoUseCases = new ProdutoUseCases();
         $produtos = $produtoUseCases->obterPorCategoria($produtoGateway, $nome);

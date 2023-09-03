@@ -34,6 +34,7 @@ CREATE TABLE `pedidos` (
   `data_criacao` datetime DEFAULT NULL,
   `data_alteracao` datetime DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
+  `pagamento_status` varchar(255) DEFAULT NULL,
   `cliente_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `cliente_id` (`cliente_id`),

@@ -1,12 +1,13 @@
 <?php
 
-namespace controllers;
+namespace Controllers;
 
 class DotEnvEnvironment
 {
     public function load(): void
     {
         $lines = file("/var/www/html/.env");
+        
         foreach ($lines as $line) {
             [$key, $value] = explode('=', $line, 2);
             $key = trim($key);

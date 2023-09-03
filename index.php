@@ -1,19 +1,19 @@
 <?php
 
-use external\MySqlConnection;
+use External\MySqlConnection;
 
 header('Content-Type: application/json; charset=utf-8');
 require_once 'vendor/autoload.php';
 
-(new controllers\DotEnvEnvironment)->load();
+(new Controllers\DotEnvEnvironment)->load();
 
-use controllers\AutenticacaoController;
-use controllers\ClienteController;
-use controllers\ProdutoController;
-use controllers\PedidoController;
-use gateways\ClienteGateway;
-use gateways\ProdutoGateway;
-use gateways\PedidoGateway;
+use Controllers\AutenticacaoController;
+use Controllers\ClienteController;
+use Controllers\ProdutoController;
+use Controllers\PedidoController;
+use Gateways\ClienteGateway;
+use Gateways\ProdutoGateway;
+use Gateways\PedidoGateway;
 use Firebase\JWT\Key as Key;
 
 $dbConnection = new MySqlConnection();
@@ -24,16 +24,13 @@ $produtoController = new ProdutoController();
 $pedidoGateway = new PedidoGateway($dbConnection);
 $pedidoController = new PedidoController();
 
-// $pedidoService = new PedidoService();
-// $pedidoController = new PedidoController($pedidoService, $ClienteGateway);
-
 $autenticacaoController = new AutenticacaoController();
 $chaveSecreta = $_ENV['CHAVE_SECRETA'] ?? "";
 
 if (isset($_GET['acao']) && $_GET['acao'] == 'gerarToken') {
     if (empty($_POST['chaveSecreta'])) {
         retornarRespostaJSON("É obrigatório informar a chaveSecreta", 401);
-        exit;
+        die();
     }
 
     if ($_POST['chaveSecreta'] == $chaveSecreta) {
@@ -57,7 +54,8 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'gerarToken') {
                     break;
 
                 case "obterClientePorCPF":
-                    $dadosCliente = $clienteController->buscarPorCPF($dbConnection, $_GET["cpf"]);
+                    $cpf = $_GET["cpf"] ?? "";
+                    $dadosCliente = $clienteController->buscarPorCPF($dbConnection, $cpf);
                     $resposta = !empty($dadosCliente) ? $dadosCliente : "Nenhum cliente encontrado com o CPF informado.";
                     retornarRespostaJSON($resposta, 200);
                     break;
@@ -81,7 +79,8 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'gerarToken') {
                     break;
 
                 case "excluirProduto":
-                    $excluirProduto = $produtoController->excluir($dbConnection, $_POST["id"]);
+                    $id = $_POST["id"] ?? 0;
+                    $excluirProduto = $produtoController->excluir($dbConnection, $id);
                     if ($excluirProduto) {
                         retornarRespostaJSON("Produto excluído com sucesso.", 200);
                     } else {
@@ -90,7 +89,8 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'gerarToken') {
                     break;
 
                 case "obterProdutosPorCategoria":
-                    $produtos = $produtoController->obterPorCategoria($dbConnection, $_GET["categoria"]);
+                    $categoria = $_GET["categoria"] ?? "";
+                    $produtos = $produtoController->obterPorCategoria($dbConnection, $categoria);
                     if (!empty($produtos)) {
                         retornarRespostaJSON($produtos, 200);
                     } else {
@@ -100,7 +100,7 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'gerarToken') {
 
                 case "cadastrarNovoPedido":
                     $jsonDados = file_get_contents("php://input");
-                    $dados = json_decode($jsonDados, true);
+                    $dados = json_decode($jsonDados, true) ?? [];
 
                     $idPedido = $pedidoController->cadastrar($dbConnection, $dados);
 
@@ -111,9 +111,43 @@ if (isset($_GET['acao']) && $_GET['acao'] == 'gerarToken') {
                     }
                     break;
 
-                    // case "obterPedidos":
-                    //     $pedidoController->obterPedidos();
-                    //     break;
+                case "obterPedidos":
+                    $pedidos = $pedidoController->obterPedidos($dbConnection);
+                    if (count($pedidos) > 0) {
+                        retornarRespostaJSON($pedidos, 200);
+                    } else {
+                        retornarRespostaJSON("Nenhum pedido encontrado.", 200);
+                    }
+                    break;
+
+                case "atualizarStatusPedido":
+                    $id = !empty($_POST["id"]) ? (int)$_POST["id"] : 0;
+                    $status = $_POST["status"] ?? "";
+                    $atualizarStatusPedido = $pedidoController->atualizarStatusPedido($dbConnection, $id, $status);
+
+                    if ($atualizarStatusPedido) {
+                        retornarRespostaJSON("Status do pedido atualizado com sucesso.", 200);
+                    } else {
+                        retornarRespostaJSON("Ocorreu um erro ao atualizar o status do pedido.", 500);
+                    }
+                    break;
+
+                case "atualizarStatusPagamentoPedido":
+                    $id = !empty($_POST["id"]) ? (int)$_POST["id"] : 0;
+                    $status = $_POST["status"] ?? "";
+                    $atualizarStatusPagamentoPedido = $pedidoController->atualizarStatusPagamentoPedido($dbConnection, $id, $status);
+                    if ($atualizarStatusPagamentoPedido) {
+                        retornarRespostaJSON("Status do pagamento do pedido atualizado com sucesso.", 200);
+                    } else {
+                        retornarRespostaJSON("Ocorreu um erro ao atualizar o status do pagamento do pedido.", 500);
+                    }
+                    break;
+
+                case "obterStatusPagamentoPedido":
+                    $id = !empty($_GET["id"]) ? (int)$_GET["id"] : 0;
+                    $resposta = $pedidoController->obterStatusPagamentoPedido($dbConnection, $id);
+                    retornarRespostaJSON($resposta, 200);
+                    break;
 
                 default:
                     echo '{"mensagem": "A ação informada é inválida."}';
