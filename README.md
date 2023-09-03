@@ -5,20 +5,20 @@ Esta documentação tem o intuito de orientar sobre a configuração e utilizaç
 
 
 ## CRIAR CONTAINERS, POD, SERVICE, DEPLOY
-
+```bash
 kubectl apply -f mysql-pv.yaml
 kubectl apply -f mysql-service.yaml
 kubectl apply -f mysql-deploy.yaml
 kubectl apply -f php-service.yaml
 kubectl apply -f php-deploy.yaml
-
+```
 
 ## Verificar se ambiente foi criado
-
+```bash
 kubectl cluster-info
 kubectl get po
 kubectl get svc
-
+```
 
 
 ## Variáveis de Ambiente
