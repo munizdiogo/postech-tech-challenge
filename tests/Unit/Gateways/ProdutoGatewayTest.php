@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Gateways\ProdutoGateway;
-use Interfaces\dbconnection\DbConnectionInterface;
+use Interfaces\DbConnection\DbConnectionInterface;
 use Entities\Produto;
 
 class ProdutoGatewayTest extends TestCase

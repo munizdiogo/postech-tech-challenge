@@ -2,7 +2,7 @@
 
 namespace Gateways;
 
-use Interfaces\dbconnection\DbConnectionInterface;
+use Interfaces\DbConnection\DbConnectionInterface;
 use Entities\Produto;
 use Interfaces\Gateways\ProdutoGatewayInterface;
 use PDOException;
@@ -53,7 +53,7 @@ class ProdutoGateway implements ProdutoGatewayInterface
 
     public function obterPorNome(string $nome): array
     {
-        $campos = []; 
+        $campos = [];
         $parametros = [
             [
                 "campo" => "nome",
@@ -66,7 +66,7 @@ class ProdutoGateway implements ProdutoGatewayInterface
 
     public function obterPorId(string $id): array
     {
-        $campos = []; 
+        $campos = [];
         $parametros = [
             [
                 "campo" => "id",
@@ -79,7 +79,7 @@ class ProdutoGateway implements ProdutoGatewayInterface
 
     public function obterPorCategoria(string $categoria): array
     {
-        $campos = []; 
+        $campos = [];
         $parametros = [
             [
                 "campo" => "categoria",

@@ -2,7 +2,7 @@
 
 namespace Gateways;
 
-use Interfaces\dbconnection\DbConnectionInterface;
+use Interfaces\DbConnection\DbConnectionInterface;
 use Interfaces\Gateways\PedidoGatewayInterface;
 use Entities\Pedido;
 use PDOException;

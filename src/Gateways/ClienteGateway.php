@@ -2,7 +2,7 @@
 
 namespace Gateways;
 
-use Interfaces\dbconnection\DbConnectionInterface;
+use Interfaces\DbConnection\DbConnectionInterface;
 use Interfaces\Gateways\ClienteGatewayInterface;
 use Entities\Cliente;
 use PDOException;
@@ -32,7 +32,7 @@ class ClienteGateway implements ClienteGatewayInterface
 
     public function obterClientePorCPF(string $cpf): array
     {
-        $campos = []; 
+        $campos = [];
         $parametros = [
             [
                 "campo" => "cpf",

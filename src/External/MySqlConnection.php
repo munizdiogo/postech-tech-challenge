@@ -2,7 +2,7 @@
 
 namespace External;
 
-use Interfaces\dbconnection\DbConnectionInterface;
+use Interfaces\DbConnection\DbConnectionInterface;
 use \PDO;
 use \PDOException;
 use \Controllers\DotEnvEnvironment;
@@ -75,7 +75,7 @@ class MySqlConnection implements DbConnectionInterface
         }
 
         $stmt->bindValue(":id", $id);
-        
+
         try {
             $stmt->execute();
             return $stmt->rowCount();
