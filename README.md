@@ -1,10 +1,12 @@
-
 # Tech Challenge - Sistema de Lanchonete
 
 Esta documentação tem o intuito de orientar sobre a configuração e utilização correta do sistema de lanchonete.
 
 
-## CRIAR CONTAINERS, POD, SERVICE, DEPLOY
+## Criação dos Pods, Containers, Services e Deployment
+
+Com o Kubernetes já configurado e em execução, abra o terminal e execute os comandos abaixo para que seja realizada a configuração do ambiente:
+
 ```bash
 kubectl apply -f mysql-pv.yaml
 kubectl apply -f mysql-service.yaml
@@ -13,10 +15,14 @@ kubectl apply -f php-service.yaml
 kubectl apply -f php-deploy.yaml
 ```
 
+
 ## Verificar se ambiente foi criado
+
+Para verificar se o ambiente foi criado corretamente, abra o terminal e execute os comandos abaixo:
+
 ```bash
 kubectl cluster-info
-kubectl get po
+kubectl get pods
 kubectl get svc
 ```
 
@@ -41,11 +47,9 @@ Em seguida verifique se já existe o arquivo com o nome ".env", caso não exista
 ```
 
 
-
-
 ## Testes Unitários
 
-Para executar os testes unitários abra o Terminal dentro do container SERVIDOR-WEB, execute o comando abaixo para ir para o diretório correto: 
+Para executar os testes unitários abra o Terminal dentro do container k8s_webserver_aplicacaoweb, execute o comando abaixo para ir para o diretório correto: 
 
 ```bash
   cd /var/www/html
@@ -56,7 +60,6 @@ Em seguida execute o seguinte comando:
 ```bash
   ./vendor/bin/phpunit --testdox tests --colors
 ```
-
 
 
 ## Documentação
