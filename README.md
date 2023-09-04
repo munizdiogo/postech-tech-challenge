@@ -4,6 +4,7 @@
 Esta documentação tem o intuito de orientar sobre a configuração e utilização correta do sistema de lanchonete.
 
 
+
 ## Criação dos Pods, Containers, Services e Deployment
 
 Com o Kubernetes já configurado e em execução, abra o terminal e execute os comandos abaixo para que seja realizada a configuração do ambiente:
@@ -17,6 +18,7 @@ kubectl apply -f php-deploy.yaml
 ```
 
 
+
 ## Verificar se ambiente foi criado
 
 Para verificar se o ambiente foi criado corretamente, abra o terminal e execute os comandos abaixo:
@@ -26,6 +28,7 @@ kubectl cluster-info
 kubectl get pods
 kubectl get svc
 ```
+
 
 
 ## Variáveis de Ambiente
@@ -48,6 +51,7 @@ Em seguida verifique se já existe o arquivo com o nome ".env", caso não exista
 ```
 
 
+
 ## Testes Unitários
 
 Para executar os testes unitários abra o Terminal dentro do container SERVIDOR-WEB, execute o comando abaixo para ir para o diretório correto: 
@@ -61,6 +65,7 @@ Em seguida execute o seguinte comando:
 ```bash
   ./vendor/bin/phpunit --testdox tests --colors
 ```
+
 
 
 ## Documentação
