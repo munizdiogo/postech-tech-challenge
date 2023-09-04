@@ -9,10 +9,13 @@ Com o Kubernetes já configurado e em execução, abra o terminal e execute os c
 
 ```bash
 kubectl apply -f mysql-pv.yaml
-kubectl apply -f mysql-service.yaml
+kubectl apply -f mysql-pvc.yaml
+
 kubectl apply -f mysql-deploy.yaml
-kubectl apply -f php-service.yaml
+kubectl apply -f mysql-service.yaml
+
 kubectl apply -f php-deploy.yaml
+kubectl apply -f php-service.yaml
 ```
 
 
@@ -21,9 +24,13 @@ kubectl apply -f php-deploy.yaml
 Para verificar se o ambiente foi criado corretamente, abra o terminal e execute os comandos abaixo:
 
 ```bash
-kubectl cluster-info
+kubectl get pv
+kubectl get pvc
+
 kubectl get pods
 kubectl get svc
+
+kubectl cluster-info
 ```
 
 
