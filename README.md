@@ -45,7 +45,7 @@ Em seguida verifique se já existe o arquivo com o nome ".env", caso não exista
 <br><br>
 ## Testes Unitários
 
-Para executar os testes unitários abra o Terminal dentro do container SERVIDOR-WEB, execute o comando abaixo para ir para o diretório correto: 
+Para executar os testes unitários abra o Terminal dentro do container k8s_webserver_aplicacaoweb, execute o comando abaixo para ir para o diretório correto: 
 
 ```bash
   cd /var/www/html
