@@ -4,63 +4,47 @@ CREATE DATABASE IF NOT EXISTS dbpostech;
 -- Usar o banco de dados criado
 USE dbpostech;
 
-
 CREATE TABLE `clientes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `data_criacao` datetime DEFAULT NULL,
-  `data_alteracao` datetime DEFAULT NULL,
-  `nome` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `cpf` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `cpf` (`cpf`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
--- dbpostech.produtos definition
-
-CREATE TABLE `produtos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `data_criacao` datetime DEFAULT NULL,
-  `data_alteracao` datetime DEFAULT NULL,
-  `nome` varchar(255) DEFAULT NULL,
-  `descricao` varchar(255) DEFAULT NULL,
-  `preco` varchar(255) DEFAULT NULL,
-  `categoria` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `produtos_nome_unique` (`nome`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
--- dbpostech.pedidos definition
+    `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
+    `data_criacao` DATETIME NOT NULL,
+    `data_alteracao` DATETIME NOT NULL,
+    `nome` VARCHAR(150) NOT NULL,
+    `email` VARCHAR(100) NOT NULL,
+    `cpf` VARCHAR(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE (`id`)
+);
 
 CREATE TABLE `pedidos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `data_criacao` datetime DEFAULT NULL,
-  `data_alteracao` datetime DEFAULT NULL,
-  `status` varchar(255) DEFAULT NULL,
-  `cliente_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `cliente_id` (`cliente_id`),
-  CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
+    `data_criacao` DATETIME NOT NULL,
+    `data_alteracao` DATETIME NOT NULL,
+    `status` VARCHAR(20) NOT NULL,
+    `cliente_id` INTEGER(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE (`id`)
+);
 
-
--- dbpostech.pedidos_produtos definition
+CREATE TABLE `produtos` (
+    `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
+    `data_criacao` DATETIME NOT NULL,
+    `data_alteracao` DATETIME NOT NULL,
+    `nome` VARCHAR(150) NOT NULL,
+    `descricao` VARCHAR(255) NOT NULL,
+    `preco` DECIMAL(4,2) NOT NULL,
+    `categoria` VARCHAR(60) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE (`id`, `nome`)
+);
 
 CREATE TABLE `pedidos_produtos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `data_criacao` datetime DEFAULT NULL,
-  `data_alteracao` datetime DEFAULT NULL,
-  `pedido_id` int(11) DEFAULT NULL,
-  `produto_id` int(11) DEFAULT NULL,
-  `produto_categoria` varchar(255) DEFAULT NULL,
-  `produto_descricao` varchar(255) DEFAULT NULL,
-  `produto_preco` varchar(255) DEFAULT NULL,
-  `produto_nome` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `pedido_id` (`pedido_id`),
-  KEY `produto_id` (`produto_id`),
-  CONSTRAINT `pedidos_produtos_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`),
-  CONSTRAINT `pedidos_produtos_ibfk_2` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
+    `data_criacao` DATETIME NOT NULL,
+    `data_alteracao` DATETIME NOT NULL,
+    `pedido_id` INTEGER NOT NULL,
+    `produto_id` INTEGER(11) NOT NULL,
+    `produto_categoria` VARCHAR(60) NOT NULL,
+    `produto_preco` DECIMAL(4,2) NOT NULL,
+    `produto_nome` VARCHAR(150) NOT NULL,
+    UNIQUE (`id`)
+);
