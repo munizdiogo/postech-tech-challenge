@@ -14,7 +14,7 @@ resource "aws_db_instance" "banco_de_dados" {
   skip_final_snapshot = true
   db_subnet_group_name = aws_db_subnet_group.db_subnet.id
 
-  # publicly_accessible = true # Permitir acesso público
+  publicly_accessible = true # Permitir acesso público
   vpc_security_group_ids = [aws_security_group.database_security_group.id]
 
   identifier = "dbpostech"
