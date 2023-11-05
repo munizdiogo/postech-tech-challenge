@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aplicacaoweb
+  labels:
+    app: aplicacaoweb
+    tier: frontend
+spec:
+  selector:
+    matchLabels:
+      app: aplicacaoweb
+      tier: frontend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: aplicacaoweb
+        tier: frontend
+    spec:
+      containers:
+        - name: aplicacaoweb
+          image: diogomuniz/techchallenge-aplicacao:fase3-v1
+          ports:
+            - name: web
+              containerPort: 80
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 250m
+            limits:
+              memory: 256Mi
+              cpu: 250m
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - general
