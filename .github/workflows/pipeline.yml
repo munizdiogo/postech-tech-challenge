@@ -44,5 +44,7 @@ jobs:
 
             - name: Fazer o deploy
               run: |
-                  kubectl apply -f php-deployment.yaml
-                  kubectl apply -f php-service.yaml
+                  docker build -t rodrigocarmodev/techchallenge-aplicacao .
+                  docker login -u AWS -p $(aws ecr get-login-password --region us-east-1) 096012785257.dkr.ecr.us-east-1.amazonaws.com/techchallenge-aplicacao
+                  docker tag rodrigocarmodev/techchallenge-aplicacao:latest 096012785257.dkr.ecr.us-east-1.amazonaws.com/techchallenge-aplicacao
+                  docker push 096012785257.dkr.ecr.us-east-1.amazonaws.com/techchallenge-aplicacao
