@@ -14,37 +14,38 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
 
-            - name: Configurar aws cli
-              run: |
-                  sudo apt install -y awscli
-                  aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws configure set default_region_name ${{ secrets.AWS_DEFAULT_REGION_NAME }}
-                  aws configure set default_output_format JSON
+            # - name: Configurar aws cli
+            #   run: |
+            #       sudo apt install -y awscli
+            #       aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+            #       aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            #       aws configure set default_region_name ${{ secrets.AWS_DEFAULT_REGION_NAME }}
+            #       aws configure set default_output_format JSON
 
-            - name: Instalar docker desktop
-              run: |
-                  sudo apt install -y ca-certificates curl gnupg lsb-release
-                  sudo mkdir -p /etc/apt/keyrings
-                  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-                  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-                  sudo apt update -y
-                  curl -O https://desktop.docker.com/linux/main/amd64/docker-desktop-4.25.0-amd64.deb
-                  sudo apt-get -y install ./docker-desktop-4.25.0-amd64.deb
+            # - name: Instalar docker desktop
+            #   run: |
+            #       sudo apt install -y ca-certificates curl gnupg lsb-release
+            #       sudo mkdir -p /etc/apt/keyrings
+            #       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+            #       echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            #       sudo apt update -y
+            #       curl -O https://desktop.docker.com/linux/main/amd64/docker-desktop-4.25.0-amd64.deb
+            #       sudo apt-get -y install ./docker-desktop-4.25.0-amd64.deb
 
-            - name: Instalar kubectl
-              run: |
-                  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-                  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-                  echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
-                  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+            # - name: Instalar kubectl
+            #   run: |
+            #       curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            #       curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+            #       echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+            #       sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-            - name: Atualizar arquivo de configuração kubeconfig
-              run: aws eks --region ${{ secrets.AWS_DEFAULT_REGION_NAME }} update-kubeconfig --name postech
+            # - name: Atualizar arquivo de configuração kubeconfig
+            #   run: aws eks --region ${{ secrets.AWS_DEFAULT_REGION_NAME }} update-kubeconfig --name postech
 
-            - name: Fazer o deploy
-              run: |
-                  docker build -t rodrigocarmodev/techchallenge-aplicacao .
-                  docker login -u AWS -p $(aws ecr get-login-password --region us-east-1) 096012785257.dkr.ecr.us-east-1.amazonaws.com/techchallenge-aplicacao
-                  docker tag rodrigocarmodev/techchallenge-aplicacao:latest 096012785257.dkr.ecr.us-east-1.amazonaws.com/techchallenge-aplicacao
-                  docker push 096012785257.dkr.ecr.us-east-1.amazonaws.com/techchallenge-aplicacao
+            # - name: Subir código atualizado para imagem no ECR
+            #   run: |
+            #       docker build -t rodrigocarmodev/techchallenge-aplicacao .
+            #       docker login -u AWS -p $(aws ecr get-login-password --region us-east-1) 096012785257.dkr.ecr.us-east-1.amazonaws.com/techchallenge-aplicacao
+            #       docker tag rodrigocarmodev/techchallenge-aplicacao:latest 096012785257.dkr.ecr.us-east-1.amazonaws.com/techchallenge-aplicacao
+            #       docker push 096012785257.dkr.ecr.us-east-1.amazonaws.com/techchallenge-aplicacao
+          
