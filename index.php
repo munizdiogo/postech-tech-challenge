@@ -14,7 +14,6 @@ use Controllers\PedidoController;
 use Gateways\ClienteGateway;
 use Gateways\ProdutoGateway;
 use Gateways\PedidoGateway;
-use Firebase\JWT\Key as Key;
 
 $dbConnection = new MySqlConnection();
 $clienteGateway = new ClienteGateway($dbConnection);

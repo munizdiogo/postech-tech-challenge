@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: aplicacaoweb
-          image: diogomuniz/techchallenge-aplicacao:fase3-v1
+          image: diogomuniz/techchallenge-aplicacao:fase3-v4
           ports:
             - name: web
               containerPort: 80
