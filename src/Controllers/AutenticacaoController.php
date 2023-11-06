@@ -21,32 +21,76 @@ class AutenticacaoController implements AutenticacaoControllerInterface
         return $headers;
     }
 
-    function gerarTokenJWT($token = '', $chaveSecreta = '')
+
+    function gerarToken($cpf = '')
     {
-        $chaveSecreta = $_ENV['CHAVE_SECRETA'];
-        $dadosUsuario = array(
-            'id' => 1,
-            'nome' => 'Lanchonete XPTO'
-        );
-        if (!empty($chaveSecreta)) {
-            $tokenConfig = array(
-                'iss' => 'localhost',
-                'aud' => 'localhost',
-                'iat' => time(),
-                'exp' => time() + (60 * 60 * 24),
-                'data' => $dadosUsuario
-            );
-            $algoritimo = 'HS256';
-            return $token = JWT::encode($tokenConfig, $chaveSecreta, $algoritimo);
+        try {
+            if (!empty($cpf)) {
+
+                $curl = curl_init();
+
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://fqxe3wyeeg.execute-api.us-east-1.amazonaws.com/login',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => '{
+                  "cpf": "55555555555"
+                }',
+                    CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/json'
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+
+                curl_close($curl);
+                http_response_code(200);
+                return $response;
+            }
+        } catch (Exception $e) {
+            http_response_code(401);
+            return false;
         }
     }
 
-    function validarTokenJWT($token, $chaveSecreta)
+
+    function criarContaCognito($cpf = '', $nome = '', $email = '')
     {
+
         try {
-            $decoded = JWT::decode($token, $chaveSecreta);
-            http_response_code(200);
-            return (array) $decoded->data;
+            if (!empty($cpf)) {
+                $curl = curl_init();
+
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://fqxe3wyeeg.execute-api.us-east-1.amazonaws.com/criar-usuario',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => '{
+                        "email": "' . $email . '",
+                        "name": "' . $nome . '",
+                        "cpf": "' . $cpf . '"
+                    }',
+                    CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/json'
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+
+                curl_close($curl);
+                http_response_code(200);
+                return $response;
+            }
         } catch (Exception $e) {
             http_response_code(401);
             return false;
