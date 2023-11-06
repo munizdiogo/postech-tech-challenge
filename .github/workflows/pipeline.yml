@@ -49,7 +49,7 @@ jobs:
             #       docker tag rodrigocarmodev/techchallenge-aplicacao:latest 096012785257.dkr.ecr.us-east-1.amazonaws.com/techchallenge-aplicacao
             #       docker push 096012785257.dkr.ecr.us-east-1.amazonaws.com/techchallenge-aplicacao
 
-    dispatch:
+    dispatch-infra-kubernetes:
         needs: deploy
         runs-on: ubuntu-latest
         steps:
@@ -58,4 +58,15 @@ jobs:
               with:
                   token: ${{ secrets.PAT }}
                   repository: munizdiogo/postech-tech-challenge-infra-kubernetes-terraform
+                  event-type: Pipeline
+                  
+    dispatch-infra-database:
+        needs: deploy
+        runs-on: ubuntu-latest
+        steps:
+            - name: Repository Dispatch
+              uses: peter-evans/repository-dispatch@v2
+              with:
+                  token: ${{ secrets.PAT }}
+                  repository: munizdiogo/postech-tech-challenge-infra-database-terraform
                   event-type: Pipeline
