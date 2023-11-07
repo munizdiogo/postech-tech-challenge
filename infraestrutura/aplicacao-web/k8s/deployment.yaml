@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: aplicacaoweb
-          image: diogomuniz/techchallenge-aplicacao:fase3-v1
+          image: 751916211357.dkr.ecr.us-east-1.amazonaws.com/techchallenge-aplicacao:fase3-v1
           ports:
             - name: web
               containerPort: 80
