@@ -3,70 +3,36 @@
 Esta documentação tem o intuito de orientar sobre a configuração e utilização correta do sistema de lanchonete.
 
 
-## Criação dos Pods, Containers, Services e Deployment
+## Infraestrutura
+Toda a infraestrutura (cluster, banco de dados, imagem, etc) está vinculada aos serviços AWS, e é criada através dos workflows com o nome "Pipeline" dentro do Github Actions dos seguintes repositórios: 
 
-Com o Kubernetes já configurado e em execução, abra o terminal e execute os comandos abaixo para que seja realizada a configuração do ambiente:
+**Infraestrutura da Aplicação:**  
+https://github.com/munizdiogo/postech-tech-challenge-infra-kubernetes-terraform
 
-```bash
-kubectl apply -f mysql-pv.yaml
-kubectl apply -f mysql-pvc.yaml
+**Infraestrutura do Banco de Dados:**  
+https://github.com/munizdiogo/postech-tech-challenge-infra-database-terraform
 
-kubectl apply -f mysql-deployment.yaml
-kubectl apply -f mysql-service.yaml
+**Funções Lambda:**  
+Devem ser criadas manualmente inicialmente, as atualizações serão feitas de forma automatizada pelo CI/CD (no Github Actions), porém a criação é realizada diretamente no AWS Lambda. 
 
-kubectl apply -f php-deployment.yaml
-kubectl apply -f php-service.yaml
-```
+Dessa forma, basta executar o workflow que todo a infraestrutura será gerada automaticamente (o build é realizado apenas na primeira vez, após isso é necessário comentar no workflow o job build e deixar apenas o job deploy ativo).
 
-
-## Verificar se ambiente foi criado
-
-Para verificar se o ambiente foi criado corretamente, abra o terminal e execute os comandos abaixo:
-
-```bash
-kubectl get pv
-kubectl get pvc
-
-kubectl get pods
-kubectl get svc
-
-kubectl cluster-info
-```
+**IMPORTANTE:** Verificar se valor das SECRETS estão de acordo com os valores da AWS. 
 
 
-## Variáveis de Ambiente
+## Como acessar
 
-Para execução correta desse projeto e a conexão com o banco de dados, abra o Terminal dentro do container k8s_webserver_aplicacaoweb, execute o comando abaixo para ir para o diretório correto: 
+**Aplicação:**  
+É necessário a criação de uma API no AWS API Gateway, e realização das configurações de rota, ao final da configuração será disponibilizado um endpoint para que seja realizada as requisições. 
 
-```bash
-  cd /var/www/html
-```
+**Banco de dados:**  
+Acesse o painel da Amazon RDS ao clicar no banco de dados desejado você visualizará um endpoint para que possa usar como host no momento da conexão com o banco de dados.
 
-Em seguida verifique se já existe o arquivo com o nome ".env", caso não exista deverá ser criado com o conteúdo abaixo: 
+## Endpoints
 
-```bash
-  DB_HOST=mysql
-  DB_NAME=dbpostech
-  DB_USERNAME=root
-  DB_PASSWORD=secret
-  DB_PORT=3306
-  CHAVE_SECRETA=SUA_CHAVE_SECRETA
-```
+Após a criação da infraestrutura, funções lambda e configuração no AWS API Gateway, você conseguirá realizar as requisições HTTP conforme a documentação:
+[Requisições HTTP - Exemplos](https://documenter.getpostman.com/view/14275027/2s93zCXzjp)
 
-
-## Testes Unitários
-
-Para executar os testes unitários abra o Terminal dentro do container k8s_webserver_aplicacaoweb, execute o comando abaixo para ir para o diretório correto: 
-
-```bash
-  cd /var/www/html
-```
-
-Em seguida execute o seguinte comando:
-
-```bash
-  ./vendor/bin/phpunit --testdox tests --colors
-```
 
 
 ## Documentação
