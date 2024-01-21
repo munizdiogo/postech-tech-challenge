@@ -107,11 +107,11 @@ class PedidoUseCasesTest extends TestCase
                 $this->equalTo($this->pedidoGatewayMock),
                 $this->equalTo($pedido)
             )
-            ->willReturn('{"mensagem": "O campo idCliente é obrigatório."}');
+            ->willReturn('{"mensagem": "O campo cpf é obrigatório."}');
 
         $resultado = $this->pedidoUseCasesMock->cadastrar($this->pedidoGatewayMock, $pedido);
         $resultadoArray = json_decode($resultado, true);
-        $this->assertEquals($resultadoArray["mensagem"], "O campo idCliente é obrigatório.");
+        $this->assertEquals($resultadoArray["mensagem"], "O campo cpf é obrigatório.");
     }
 
     public function testObterPedidosComPedidosEncontrados()
@@ -296,14 +296,14 @@ class PedidoUseCasesTest extends TestCase
         ];
 
         $this->pedidoUseCasesMock->expects($this->once())
-            ->method('obterStatusPagamentoPedido')
+            ->method('obterStatusPorIdPedido')
             ->with(
                 $this->equalTo($this->pedidoGatewayMock),
                 $this->equalTo($id)
             )
             ->willReturn($arrayEsperado);
 
-        $resultado = $this->pedidoUseCasesMock->obterStatusPagamentoPedido($this->pedidoGatewayMock, $id);
+        $resultado = $this->pedidoUseCasesMock->obterStatusPorIdPedido($this->pedidoGatewayMock, $id);
         $this->assertEquals($arrayEsperado, $resultado);
     }
 
@@ -311,14 +311,14 @@ class PedidoUseCasesTest extends TestCase
     {
         $id = 1;
         $this->pedidoUseCasesMock->expects($this->once())
-            ->method('obterStatusPagamentoPedido')
+            ->method('obterStatusPorIdPedido')
             ->with(
                 $this->equalTo($this->pedidoGatewayMock),
                 $this->equalTo($id)
             )
             ->willReturn('{"mensagem": "Não foi encontrado um pedido com o ID informado."}');
 
-        $resultado = $this->pedidoUseCasesMock->obterStatusPagamentoPedido($this->pedidoGatewayMock, $id);
+        $resultado = $this->pedidoUseCasesMock->obterStatusPorIdPedido($this->pedidoGatewayMock, $id);
         $resultadoArray = json_decode($resultado, true);
         $this->assertEquals($resultadoArray["mensagem"], "Não foi encontrado um pedido com o ID informado.");
     }
@@ -327,14 +327,14 @@ class PedidoUseCasesTest extends TestCase
     {
         $id = 0;
         $this->pedidoUseCasesMock->expects($this->once())
-            ->method('obterStatusPagamentoPedido')
+            ->method('obterStatusPorIdPedido')
             ->with(
                 $this->equalTo($this->pedidoGatewayMock),
                 $this->equalTo($id)
             )
             ->willReturn('{"mensagem": "O campo id é obrigatório."}');
 
-        $resultado = $this->pedidoUseCasesMock->obterStatusPagamentoPedido($this->pedidoGatewayMock, $id);
+        $resultado = $this->pedidoUseCasesMock->obterStatusPorIdPedido($this->pedidoGatewayMock, $id);
         $resultadoArray = json_decode($resultado, true);
         $this->assertEquals($resultadoArray["mensagem"], "O campo id é obrigatório.");
     }

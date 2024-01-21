@@ -258,12 +258,12 @@ class PedidoGatewayTest extends TestCase
         ];
 
         $this->pedidoGatewayMock->expects($this->once())
-            ->method('obterStatusPagamentoPedido')
+            ->method('obterStatusPorIdPedido')
             ->with(1)
             ->willReturn($arrayEsperado);
 
 
-        $resultado = $this->pedidoGatewayMock->obterStatusPagamentoPedido(1);
+        $resultado = $this->pedidoGatewayMock->obterStatusPorIdPedido(1);
         $this->assertIsArray($resultado);
         $this->assertArrayHasKey("id", $resultado);
         $this->assertArrayHasKey("pagamento_status", $resultado);
@@ -271,10 +271,10 @@ class PedidoGatewayTest extends TestCase
     public function testObterStatusPagamentoPedidoComPedidoNaoEncontrado()
     {
         $this->pedidoGatewayMock->expects($this->once())
-            ->method('obterStatusPagamentoPedido')
+            ->method('obterStatusPorIdPedido')
             ->with(1)
             ->willReturn([]);
-        $resultado = $this->pedidoGatewayMock->obterStatusPagamentoPedido(1);
+        $resultado = $this->pedidoGatewayMock->obterStatusPorIdPedido(1);
         $this->assertEquals([], $resultado);
     }
 
@@ -285,7 +285,7 @@ class PedidoGatewayTest extends TestCase
             "data_criacao" => "2023-08-28 04:00:00",
             "data_alteracao" => null,
             "status" => "em_preparacao",
-            "cliente_id" => 2,
+            "cpf" => 2,
             "pagamento_status" => "pendente"
         ];
 
