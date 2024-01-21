@@ -11,3 +11,7 @@
 /target/
 /build/
 /out/
+config.php
+/src/pagamento/External/vendor
+/src/pagamento/External/composer.lock
+/composer.lock

@@ -11,7 +11,8 @@
         ]
     },
     "require": {
-        "firebase/php-jwt": "^6.8"
+        "firebase/php-jwt": "^6.8",
+        "aws/aws-sdk-php": "2.*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.6"

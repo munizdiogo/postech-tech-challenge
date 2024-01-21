@@ -8,32 +8,32 @@ class PedidoTest extends TestCase
     public function testGetStatus()
     {
         $status = 'recebido';
-        $idCliente = '1';
+        $cpf = '1';
         $produtos = ['Produto A', 'Produto B'];
 
-        $pedido = new Pedido($status, $idCliente, $produtos);
+        $pedido = new Pedido($status, $cpf, $produtos);
 
         $this->assertEquals($status, $pedido->getStatus());
     }
 
-    public function testGetIdCliente()
+    public function testgetCPF()
     {
         $status = 'finalizado';
-        $idCliente = '2';
+        $cpf = '2';
         $produtos = ['Produto C', 'Produto D'];
 
-        $pedido = new Pedido($status, $idCliente, $produtos);
+        $pedido = new Pedido($status, $cpf, $produtos);
 
-        $this->assertEquals($idCliente, $pedido->getIdCliente());
+        $this->assertEquals($cpf, $pedido->getCPF());
     }
 
     public function testGetProdutos()
     {
         $status = 'em_preparacao';
-        $idCliente = '3';
+        $cpf = '3';
         $produtos = ['Produto E', 'Produto F'];
 
-        $pedido = new Pedido($status, $idCliente, $produtos);
+        $pedido = new Pedido($status, $cpf, $produtos);
 
         $this->assertEquals($produtos, $pedido->getProdutos());
     }

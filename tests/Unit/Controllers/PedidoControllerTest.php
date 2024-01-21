@@ -23,7 +23,7 @@ class PedidoControllerTest extends TestCase
     public function testCadastrarPedidoComSucesso()
     {
         $json = '{
-            "idCliente": 1,
+            "cpf": 1,
             "produtos": [
                 {
                     "id": 2,
@@ -59,7 +59,7 @@ class PedidoControllerTest extends TestCase
     public function testCadastrarPedidoComErro()
     {
         $json = '{
-            "idCliente": 1,
+            "cpf": 1,
             "produtos": [
                 {
                     "id": 2,
@@ -96,7 +96,7 @@ class PedidoControllerTest extends TestCase
     {
         
         $dadosFaltando = [
-            'idCliente' => 1
+            'cpf' => 1
         ];
         
         $this->pedidoControllerMock->expects($this->once())

@@ -27,7 +27,7 @@ class ClienteTest extends TestCase
         $this->assertEquals($email, $cliente->getEmail());
     }
 
-    public function testGetCpf()
+    public function testgetCPF()
     {
         $nome = 'José Pereira';
         $email = 'jose@example.com';
@@ -35,6 +35,6 @@ class ClienteTest extends TestCase
 
         $cliente = new Cliente($nome, $email, $cpf);
 
-        $this->assertEquals($cpf, $cliente->getCpf());
+        $this->assertEquals($cpf, $cliente->getCPF());
     }
 }
