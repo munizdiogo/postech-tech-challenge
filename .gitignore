@@ -31,7 +31,7 @@ pagamento/config.php
 pedido/config.php
 producao/config.php
 produto/config.php
-autenticacao/.phpunit.result.cache
+autenticacao/
 pagamento/.phpunit.result.cache
 pedido/.phpunit.result.cache
 producao/.phpunit.result.cache
